@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "echoes_show_the_past:giant_template_projection_index",
+  "max_ticks": 100,
+  "structure": "minecraft:empty"
+}

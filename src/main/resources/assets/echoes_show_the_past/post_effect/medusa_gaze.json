@@ -1,0 +1,68 @@
+{
+  "targets": {
+    "medusa_swap": {}
+  },
+  "passes": [
+    {
+      "vertex_shader": "minecraft:core/screenquad",
+      "fragment_shader": "echoes_show_the_past:post/medusa_gaze",
+      "inputs": [
+        {
+          "sampler_name": "Scene",
+          "target": "minecraft:main",
+          "bilinear": true
+        }
+      ],
+      "output": "medusa_swap",
+      "uniforms": {
+        "MedusaConfig": [
+          {
+            "name": "Phase",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "Venom",
+            "type": "vec4",
+            "value": [0.31, 0.56, 0.37, 0.0]
+          },
+          {
+            "name": "Stone",
+            "type": "vec4",
+            "value": [0.73, 0.67, 0.47, 1.0]
+          },
+          {
+            "name": "Reserved",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "Grail",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          }
+        ]
+      }
+    },
+    {
+      "vertex_shader": "minecraft:core/screenquad",
+      "fragment_shader": "minecraft:post/blit",
+      "inputs": [
+        {
+          "sampler_name": "In",
+          "target": "medusa_swap"
+        }
+      ],
+      "uniforms": {
+        "BlitConfig": [
+          {
+            "name": "ColorModulate",
+            "type": "vec4",
+            "value": [1.0, 1.0, 1.0, 1.0]
+          }
+        ]
+      },
+      "output": "minecraft:main"
+    }
+  ]
+}

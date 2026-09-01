@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "max_ticks": 20,
+  "function": "echoes_show_the_past:arena_wave_player_rescue",
+  "structure": "minecraft:empty"
+}

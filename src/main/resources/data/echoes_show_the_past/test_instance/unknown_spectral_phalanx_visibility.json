@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "echoes_show_the_past:unknown_spectral_phalanx_visibility",
+  "max_ticks": 80,
+  "structure": "minecraft:empty"
+}

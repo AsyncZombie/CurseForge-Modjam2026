@@ -1,0 +1,27 @@
+{
+  "parent": "echoes_show_the_past:unknown/claim_philosophers_stone",
+  "display": {
+    "icon": {
+      "id": "minecraft:iron_sword"
+    },
+    "title": {
+      "translate": "advancements.echoes_show_the_past.restore.coliseum.title"
+    },
+    "description": {
+      "translate": "advancements.echoes_show_the_past.restore.coliseum.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "materialized_echo": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    ["materialized_echo"]
+  ],
+  "sends_telemetry_event": false
+}

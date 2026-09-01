@@ -1,0 +1,40 @@
+{
+  "parent": "echoes_show_the_past:restore/sanctuary_of_medusa",
+  "display": {
+    "icon": {
+      "id": "minecraft:iron_axe"
+    },
+    "title": {
+      "translate": "advancements.echoes_show_the_past.restore.slay_medusa.title"
+    },
+    "description": {
+      "translate": "advancements.echoes_show_the_past.restore.slay_medusa.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "killed_medusa": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "echoes_show_the_past:medusa"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "killed_medusa"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

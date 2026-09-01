@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": ["ALA", "CFC", "ARA"],
+  "key": {
+    "A": "minecraft:amethyst_shard",
+    "L": "minecraft:spyglass",
+    "C": "minecraft:copper_ingot",
+    "R": "minecraft:repeater",
+    "F": "echoes_show_the_past:resonant_filament"
+  },
+  "result": {"id": "echoes_show_the_past:harmonic_decoder", "count": 1}
+}

@@ -1,0 +1,56 @@
+{
+  "echo_impulse": {
+    "subtitle": "subtitles.echoes_show_the_past.echo_impulse",
+    "sounds": ["echoes_show_the_past:echo_impulse"]
+  },
+  "echo_sweep": {
+    "subtitle": "subtitles.echoes_show_the_past.echo_sweep",
+    "sounds": ["echoes_show_the_past:echo_sweep"]
+  },
+  "echo_return": {
+    "subtitle": "subtitles.echoes_show_the_past.echo_return",
+    "sounds": ["echoes_show_the_past:echo_return"]
+  },
+  "low_frequency_impulse": {
+    "subtitle": "subtitles.echoes_show_the_past.low_frequency_impulse",
+    "sounds": ["echoes_show_the_past:low_frequency_impulse"]
+  },
+  "pedestal_ping": {
+    "subtitle": "subtitles.echoes_show_the_past.pedestal_ping",
+    "sounds": ["echoes_show_the_past:pedestal_ping"]
+  },
+  "low_frequency_return": {
+    "subtitle": "subtitles.echoes_show_the_past.low_frequency_return",
+    "sounds": ["echoes_show_the_past:low_frequency_return"]
+  },
+  "unknown_medieval_sword_attack": {
+    "subtitle": "subtitles.echoes_show_the_past.unknown_medieval_sword_attack",
+    "sounds": [
+      "echoes_show_the_past:unknown_medieval/attack_1",
+      "echoes_show_the_past:unknown_medieval/attack_2",
+      "echoes_show_the_past:unknown_medieval/attack_3",
+      "echoes_show_the_past:unknown_medieval/attack_4",
+      "echoes_show_the_past:unknown_medieval/attack_5",
+      "echoes_show_the_past:unknown_medieval/attack_6",
+      "echoes_show_the_past:unknown_medieval/attack_7",
+      "echoes_show_the_past:unknown_medieval/attack_8",
+      "echoes_show_the_past:unknown_medieval/attack_9",
+      "echoes_show_the_past:unknown_medieval/attack_10"
+    ]
+  },
+  "unknown_medieval_sword_clash": {
+    "subtitle": "subtitles.echoes_show_the_past.unknown_medieval_sword_clash",
+    "sounds": [
+      "echoes_show_the_past:unknown_medieval/clash_1",
+      "echoes_show_the_past:unknown_medieval/clash_2",
+      "echoes_show_the_past:unknown_medieval/clash_3",
+      "echoes_show_the_past:unknown_medieval/clash_4",
+      "echoes_show_the_past:unknown_medieval/clash_5",
+      "echoes_show_the_past:unknown_medieval/clash_6",
+      "echoes_show_the_past:unknown_medieval/clash_7",
+      "echoes_show_the_past:unknown_medieval/clash_8",
+      "echoes_show_the_past:unknown_medieval/clash_9",
+      "echoes_show_the_past:unknown_medieval/clash_10"
+    ]
+  }
+}

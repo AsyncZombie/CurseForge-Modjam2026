@@ -1,0 +1,28 @@
+{
+  "ultrawarm": false,
+  "natural": false,
+  "piglin_safe": false,
+  "respawn_anchor_works": false,
+  "bed_works": false,
+  "has_raids": false,
+  "has_skylight": false,
+  "has_ceiling": false,
+  "coordinate_scale": 1.0,
+  "ambient_light": 0.24,
+  "fixed_time": 18000,
+  "logical_height": 256,
+  "effects": "minecraft:the_end",
+  "attributes": {
+    "neoforge:custom_skybox": "echoes_show_the_past:timeless_void"
+  },
+  "infiniburn": "#minecraft:infiniburn_overworld",
+  "min_y": 0,
+  "height": 256,
+  "has_ender_dragon_fight": false,
+  "monster_spawn_light_level": {
+    "type": "minecraft:uniform",
+    "min_inclusive": 0,
+    "max_inclusive": 0
+  },
+  "monster_spawn_block_light_limit": 15
+}

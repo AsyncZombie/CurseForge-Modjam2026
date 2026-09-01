@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "powered=false,spent=false": { "model": "echoes_show_the_past:block/echo_pedestal" },
+    "powered=true,spent=false": { "model": "echoes_show_the_past:block/echo_pedestal" },
+    "powered=false,spent=true": { "model": "echoes_show_the_past:block/echo_pedestal_spent" },
+    "powered=true,spent=true": { "model": "echoes_show_the_past:block/echo_pedestal_spent" }
+  }
+}

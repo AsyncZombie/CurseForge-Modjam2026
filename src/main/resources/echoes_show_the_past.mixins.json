@@ -1,0 +1,42 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "dev.alvar.echoespast.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "GenericPacketSplitterMixin",
+    "server.LevelBlockEntityTickMixin",
+    "server.ServerLevelMixin",
+    "server.StructureTemplateAccessor"
+  ],
+  "client": [
+    "client.CameraMixin",
+    "client.ClientInputAccessor",
+    "client.LocalPlayerLookMixin",
+    "client.BlockEntityRenderDispatcherMixin",
+    "client.BufferSourceDiagnosticsMixin",
+    "client.ClientLevelMixin",
+    "client.EntityRenderDispatcherMixin",
+    "client.ItemCutoutSamplerCompatMixin",
+    "client.LevelMixin",
+    "client.LevelRendererMixin",
+    "client.LivingEntityAccessor",
+    "client.ModelFeatureRendererMixin",
+    "client.ModelPartAccessor",
+    "client.ParticleEngineMixin",
+    "client.PostChainAccessor",
+    "client.PostPassAccessor",
+    "client.RenderSetupAccessor",
+    "client.RenderTypeAccessor",
+    "client.SingleQuadParticleAccessor",
+    "client.SoundEngineMixin",
+    "client.SodiumLevelSliceMixin",
+    "client.SubmitNodeCollectionMixin",
+    "client.TextureBindingAccessor",
+    "client.WalkAnimationStateAccessor",
+    "client.RenderSectionRegionMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "parent": "echoes_show_the_past:progress/past_echo",
+  "criteria": {
+    "has_horus_fragment": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "echoes_show_the_past:horus_fragment"
+          }
+        ]
+      }
+    },
+    "has_medusa_fragment": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "echoes_show_the_past:medusa_fragment"
+          }
+        ]
+      }
+    },
+    "has_grail_fragment": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "echoes_show_the_past:grail_fragment"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    ["has_horus_fragment"],
+    ["has_medusa_fragment"],
+    ["has_grail_fragment"]
+  ],
+  "sends_telemetry_event": false
+}

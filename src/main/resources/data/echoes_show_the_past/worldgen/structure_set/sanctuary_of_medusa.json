@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 20260113,
+    "separation": 12,
+    "spacing": 24
+  },
+  "structures": [
+    {
+      "structure": "echoes_show_the_past:sanctuary_of_medusa",
+      "weight": 1
+    }
+  ]
+}

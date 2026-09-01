@@ -1,0 +1,34 @@
+{
+  "parent": "echoes_show_the_past:progress/echoes_united",
+  "display": {
+    "icon": {
+      "id": "echoes_show_the_past:harmonic_key"
+    },
+    "title": {
+      "translate": "advancements.echoes_show_the_past.progress.harmonic_key.title"
+    },
+    "description": {
+      "translate": "advancements.echoes_show_the_past.progress.harmonic_key.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_harmonic_key": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "echoes_show_the_past:harmonic_key"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    ["has_harmonic_key"]
+  ],
+  "sends_telemetry_event": false
+}

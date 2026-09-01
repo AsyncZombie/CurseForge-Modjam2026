@@ -1,0 +1,34 @@
+{
+  "parent": "echoes_show_the_past:progress/resonator_modules",
+  "display": {
+    "icon": {
+      "id": "echoes_show_the_past:harmonic_decoder"
+    },
+    "title": {
+      "translate": "advancements.echoes_show_the_past.progress.harmonic_decoder.title"
+    },
+    "description": {
+      "translate": "advancements.echoes_show_the_past.progress.harmonic_decoder.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_harmonic_decoder": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "echoes_show_the_past:harmonic_decoder"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    ["has_harmonic_decoder"]
+  ],
+  "sends_telemetry_event": false
+}

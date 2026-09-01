@@ -1,0 +1,113 @@
+{
+  "targets": {
+    "philosophers_stone_swap": {}
+  },
+  "passes": [
+    {
+      "vertex_shader": "minecraft:core/screenquad",
+      "fragment_shader": "echoes_show_the_past:post/philosophers_stone",
+      "inputs": [
+        {
+          "sampler_name": "Scene",
+          "target": "minecraft:main",
+          "bilinear": true
+        },
+        {
+          "sampler_name": "WorldDepth",
+          "target": "minecraft:main",
+          "use_depth_buffer": true
+        }
+      ],
+      "output": "philosophers_stone_swap",
+      "uniforms": {
+        "PhilosophersStoneConfig": [
+          {
+            "name": "Phase",
+            "type": "vec4",
+            "value": [0.0, 0.0, 1.0, 0.0]
+          },
+          {
+            "name": "ViewCenter",
+            "type": "vec4",
+            "value": [0.0, 0.0, -8.0, 8.0]
+          },
+          {
+            "name": "ViewAxisX",
+            "type": "vec4",
+            "value": [1.0, 0.0, 0.0, 4.0]
+          },
+          {
+            "name": "ViewAxisY",
+            "type": "vec4",
+            "value": [0.0, 1.0, 0.0, 4.0]
+          },
+          {
+            "name": "ViewAxisZ",
+            "type": "vec4",
+            "value": [0.0, 0.0, 1.0, 4.0]
+          },
+          {
+            "name": "Sweep",
+            "type": "vec4",
+            "value": [0.62, 0.18, 0.76, 0.0]
+          },
+          {
+            "name": "Composite",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "Relics",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 1.0]
+          },
+          {
+            "name": "MedusaPhase",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "InverseProjection0",
+            "type": "vec4",
+            "value": [1.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "InverseProjection1",
+            "type": "vec4",
+            "value": [0.0, 1.0, 0.0, 0.0]
+          },
+          {
+            "name": "InverseProjection2",
+            "type": "vec4",
+            "value": [0.0, 0.0, 1.0, 0.0]
+          },
+          {
+            "name": "InverseProjection3",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 1.0]
+          }
+        ]
+      }
+    },
+    {
+      "vertex_shader": "minecraft:core/screenquad",
+      "fragment_shader": "minecraft:post/blit",
+      "inputs": [
+        {
+          "sampler_name": "In",
+          "target": "philosophers_stone_swap"
+        }
+      ],
+      "uniforms": {
+        "BlitConfig": [
+          {
+            "name": "ColorModulate",
+            "type": "vec4",
+            "value": [1.0, 1.0, 1.0, 1.0]
+          }
+        ]
+      },
+      "output": "minecraft:main"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "parent": "echoes_show_the_past:progress/past_echo",
+  "display": {
+    "icon": {
+      "id": "minecraft:iron_sword"
+    },
+    "title": {
+      "translate": "advancements.echoes_show_the_past.progress.coliseum.title"
+    },
+    "description": {
+      "translate": "advancements.echoes_show_the_past.progress.coliseum.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "in_coliseum": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structures": "echoes_show_the_past:coliseum"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "in_coliseum"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

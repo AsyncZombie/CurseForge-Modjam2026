@@ -1,0 +1,34 @@
+{
+  "parent": "echoes_show_the_past:restore/sanctuary_of_medusa",
+  "display": {
+    "icon": {
+      "id": "echoes_show_the_past:medusa_head"
+    },
+    "title": {
+      "translate": "advancements.echoes_show_the_past.restore.medusa_head.title"
+    },
+    "description": {
+      "translate": "advancements.echoes_show_the_past.restore.medusa_head.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_medusa_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "echoes_show_the_past:medusa_head"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    ["has_medusa_head"]
+  ],
+  "sends_telemetry_event": false
+}

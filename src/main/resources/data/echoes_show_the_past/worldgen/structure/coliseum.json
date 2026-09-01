@@ -1,0 +1,7 @@
+{
+  "type": "echoes_show_the_past:echo_site",
+  "biomes": "#echoes_show_the_past:has_structure/coliseum",
+  "site": "echoes_show_the_past:coliseum",
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}

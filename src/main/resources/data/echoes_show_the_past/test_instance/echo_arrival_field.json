@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "echoes_show_the_past:echo_arrival_field",
+  "max_ticks": 20,
+  "structure": "minecraft:empty"
+}

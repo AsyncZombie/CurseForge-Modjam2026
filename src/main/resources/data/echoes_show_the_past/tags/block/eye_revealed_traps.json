@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:tripwire",
+    "minecraft:tripwire_hook",
+    "minecraft:trapped_chest",
+    "minecraft:stone_pressure_plate",
+    "minecraft:polished_blackstone_pressure_plate",
+    "minecraft:light_weighted_pressure_plate",
+    "minecraft:heavy_weighted_pressure_plate",
+    "minecraft:pointed_dripstone",
+    "minecraft:dispenser"
+  ]
+}

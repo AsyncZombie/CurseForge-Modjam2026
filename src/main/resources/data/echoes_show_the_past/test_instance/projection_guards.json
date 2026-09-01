@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "echoes_show_the_past:projection_guards",
+  "max_ticks": 20,
+  "structure": "minecraft:empty"
+}

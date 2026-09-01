@@ -1,0 +1,37 @@
+{
+  "parent": "echoes_show_the_past:unknown/defeat_unknown",
+  "display": {
+    "icon": {
+      "id": "echoes_show_the_past:philosophers_stone"
+    },
+    "title": {
+      "translate": "advancements.echoes_show_the_past.unknown.claim_philosophers_stone.title"
+    },
+    "description": {
+      "translate": "advancements.echoes_show_the_past.unknown.claim_philosophers_stone.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_stone": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "echoes_show_the_past:philosophers_stone"
+          }
+        ]
+      }
+    },
+    "granted_by_code": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    ["has_stone", "granted_by_code"]
+  ],
+  "sends_telemetry_event": false
+}

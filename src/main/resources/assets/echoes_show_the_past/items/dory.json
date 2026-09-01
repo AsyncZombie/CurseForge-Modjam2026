@@ -1,0 +1,7 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "echoes_show_the_past:item/dory"
+  },
+  "swap_animation_scale": 1.35
+}

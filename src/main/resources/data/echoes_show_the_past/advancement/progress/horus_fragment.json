@@ -1,0 +1,34 @@
+{
+  "parent": "echoes_show_the_past:progress/egyptian_temple",
+  "display": {
+    "icon": {
+      "id": "echoes_show_the_past:horus_fragment"
+    },
+    "title": {
+      "translate": "advancements.echoes_show_the_past.progress.horus_fragment.title"
+    },
+    "description": {
+      "translate": "advancements.echoes_show_the_past.progress.horus_fragment.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_horus_fragment": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "echoes_show_the_past:horus_fragment"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    ["has_horus_fragment"]
+  ],
+  "sends_telemetry_event": false
+}

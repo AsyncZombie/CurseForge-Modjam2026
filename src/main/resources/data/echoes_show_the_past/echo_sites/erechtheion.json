@@ -1,0 +1,30 @@
+{
+  "structure": "echoes_show_the_past:erechtheion",
+  "structure_set": "echoes_show_the_past:erechtheion",
+  "present_template": "echoes_show_the_past:sites/erechtheion_present",
+  "intact_template": "echoes_show_the_past:sites/erechtheion_intact",
+  "default_color": "white",
+  "sonar_family": "stony",
+  "biome": "echoes_show_the_past:erechtheion_grounds",
+  "anchor_heightmap": "ocean_floor",
+  "anchor_y_offset": 0,
+  "requires_open_ocean": false,
+  "requires_elevated_terrain": true,
+  "memory_min": [-22, -7, -19],
+  "memory_max": [21, 16, 18],
+  "enabled": true,
+  "requires_harmonic_key": false,
+  "loot": [
+    {"offset": [20, 8, 16], "loot_table": "echoes_show_the_past:chests/erechtheion/poseidon_looted"},
+    {"offset": [20, 8, 17], "loot_table": "echoes_show_the_past:chests/erechtheion/poseidon_looted"},
+    {"offset": [16, 8, 11], "loot_table": "echoes_show_the_past:chests/erechtheion/hephaestus_looted"},
+    {"offset": [16, 9, 22], "loot_table": "echoes_show_the_past:chests/erechtheion/butes_looted"},
+
+    {"offset": [20, 8, 16], "loot_table": "echoes_show_the_past:chests/erechtheion/poseidon", "phase": "past"},
+    {"offset": [20, 8, 17], "loot_table": "echoes_show_the_past:chests/erechtheion/poseidon", "phase": "past"},
+    {"offset": [15, 8, 11], "loot_table": "echoes_show_the_past:chests/erechtheion/hephaestus", "phase": "past"},
+    {"offset": [15, 8, 22], "loot_table": "echoes_show_the_past:chests/erechtheion/butes", "phase": "past"},
+    {"offset": [13, 12, 10], "loot_table": "echoes_show_the_past:chests/erechtheion/athena", "phase": "past"},
+    {"offset": [13, 12, 23], "loot_table": "echoes_show_the_past:chests/erechtheion/athena", "phase": "past"}
+  ]
+}

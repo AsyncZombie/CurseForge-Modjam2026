@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "echoes_show_the_past:philosophers_stone_cancel",
+  "max_ticks": 160,
+  "structure": "minecraft:empty"
+}

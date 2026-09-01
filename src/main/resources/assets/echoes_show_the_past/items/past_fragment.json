@@ -1,0 +1,161 @@
+{
+  "model": {
+    "type": "minecraft:range_dispatch",
+    "property": "echoes_show_the_past:fragment_animation",
+    "entries": [
+      {
+        "threshold": 0.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "echoes_show_the_past:item/past_fragment_1",
+          "tints": [
+            {
+              "type": "echoes_show_the_past:fragment_tint"
+            }
+          ]
+        }
+      },
+      {
+        "threshold": 1.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "echoes_show_the_past:item/past_fragment_2",
+          "tints": [
+            {
+              "type": "echoes_show_the_past:fragment_tint"
+            }
+          ]
+        }
+      },
+      {
+        "threshold": 2.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "echoes_show_the_past:item/past_fragment_3",
+          "tints": [
+            {
+              "type": "echoes_show_the_past:fragment_tint"
+            }
+          ]
+        }
+      },
+      {
+        "threshold": 3.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "echoes_show_the_past:item/past_fragment_4",
+          "tints": [
+            {
+              "type": "echoes_show_the_past:fragment_tint"
+            }
+          ]
+        }
+      },
+      {
+        "threshold": 4.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "echoes_show_the_past:item/past_fragment_5",
+          "tints": [
+            {
+              "type": "echoes_show_the_past:fragment_tint"
+            }
+          ]
+        }
+      },
+      {
+        "threshold": 5.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "echoes_show_the_past:item/past_fragment_6",
+          "tints": [
+            {
+              "type": "echoes_show_the_past:fragment_tint"
+            }
+          ]
+        }
+      },
+      {
+        "threshold": 6.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "echoes_show_the_past:item/past_fragment_7",
+          "tints": [
+            {
+              "type": "echoes_show_the_past:fragment_tint"
+            }
+          ]
+        }
+      },
+      {
+        "threshold": 7.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "echoes_show_the_past:item/past_fragment_8",
+          "tints": [
+            {
+              "type": "echoes_show_the_past:fragment_tint"
+            }
+          ]
+        }
+      },
+      {
+        "threshold": 8.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "echoes_show_the_past:item/past_fragment_9",
+          "tints": [
+            {
+              "type": "echoes_show_the_past:fragment_tint"
+            }
+          ]
+        }
+      },
+      {
+        "threshold": 9.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "echoes_show_the_past:item/past_fragment_10",
+          "tints": [
+            {
+              "type": "echoes_show_the_past:fragment_tint"
+            }
+          ]
+        }
+      },
+      {
+        "threshold": 10.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "echoes_show_the_past:item/past_fragment_11",
+          "tints": [
+            {
+              "type": "echoes_show_the_past:fragment_tint"
+            }
+          ]
+        }
+      },
+      {
+        "threshold": 11.0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "echoes_show_the_past:item/past_fragment_12",
+          "tints": [
+            {
+              "type": "echoes_show_the_past:fragment_tint"
+            }
+          ]
+        }
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "echoes_show_the_past:item/past_fragment",
+      "tints": [
+        {
+          "type": "echoes_show_the_past:fragment_tint"
+        }
+      ]
+    }
+  }
+}

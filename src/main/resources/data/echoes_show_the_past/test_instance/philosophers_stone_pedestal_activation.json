@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "echoes_show_the_past:philosophers_stone_pedestal_activation",
+  "max_ticks": 190,
+  "structure": "minecraft:empty"
+}

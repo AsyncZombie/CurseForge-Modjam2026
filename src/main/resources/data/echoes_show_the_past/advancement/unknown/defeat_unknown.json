@@ -1,0 +1,44 @@
+{
+  "parent": "echoes_show_the_past:unknown/enter_timeless_void",
+  "display": {
+    "icon": {
+      "id": "minecraft:nether_star"
+    },
+    "title": {
+      "translate": "advancements.echoes_show_the_past.unknown.defeat_unknown.title"
+    },
+    "description": {
+      "translate": "advancements.echoes_show_the_past.unknown.defeat_unknown.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "killed_unknown": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "type": "echoes_show_the_past:unknown"
+            }
+          }
+        ]
+      }
+    },
+    "granted_by_code": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "killed_unknown",
+      "granted_by_code"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

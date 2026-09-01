@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "echoes_show_the_past:unknown_medieval"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "echoes_show_the_past:unknown_medieval"
+      }
+    ]
+  }
+}

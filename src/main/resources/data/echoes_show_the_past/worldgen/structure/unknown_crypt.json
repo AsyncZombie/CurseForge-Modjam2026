@@ -1,0 +1,7 @@
+{
+  "type": "echoes_show_the_past:echo_site",
+  "biomes": "#echoes_show_the_past:has_structure/unknown_crypt",
+  "site": "echoes_show_the_past:unknown_crypt",
+  "spawn_overrides": {},
+  "step": "underground_structures"
+}

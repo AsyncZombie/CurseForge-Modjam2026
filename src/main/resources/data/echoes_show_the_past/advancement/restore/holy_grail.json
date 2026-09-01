@@ -1,0 +1,34 @@
+{
+  "parent": "echoes_show_the_past:restore/abandoned_mine",
+  "display": {
+    "icon": {
+      "id": "echoes_show_the_past:holy_grail"
+    },
+    "title": {
+      "translate": "advancements.echoes_show_the_past.restore.holy_grail.title"
+    },
+    "description": {
+      "translate": "advancements.echoes_show_the_past.restore.holy_grail.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_holy_grail": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "echoes_show_the_past:holy_grail"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    ["has_holy_grail"]
+  ],
+  "sends_telemetry_event": false
+}

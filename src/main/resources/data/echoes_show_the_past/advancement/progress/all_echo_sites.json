@@ -1,0 +1,156 @@
+{
+  "parent": "echoes_show_the_past:root",
+  "display": {
+    "icon": {
+      "id": "minecraft:filled_map"
+    },
+    "title": {
+      "translate": "advancements.echoes_show_the_past.progress.all_echo_sites.title"
+    },
+    "description": {
+      "translate": "advancements.echoes_show_the_past.progress.all_echo_sites.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "egyptian_temple": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structures": "echoes_show_the_past:egyptian_temple"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "abandoned_mine": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structures": "echoes_show_the_past:abandoned_mine"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "sanctuary_of_medusa": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structures": "echoes_show_the_past:sanctuary_of_medusa"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "medieval_watchtower": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structures": "echoes_show_the_past:medieval_watchtower"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "coliseum": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structures": "echoes_show_the_past:coliseum"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "erechtheion": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structures": "echoes_show_the_past:erechtheion"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "unknown_crypt": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structures": "echoes_show_the_past:unknown_crypt"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "egyptian_temple"
+    ],
+    [
+      "abandoned_mine"
+    ],
+    [
+      "sanctuary_of_medusa"
+    ],
+    [
+      "medieval_watchtower"
+    ],
+    [
+      "coliseum"
+    ],
+    [
+      "erechtheion"
+    ],
+    [
+      "unknown_crypt"
+    ]
+  ],
+  "sends_telemetry_event": false
+}

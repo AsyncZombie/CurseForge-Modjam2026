@@ -1,0 +1,9 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "echoes_show_the_past:item/medusa_petrified_head",
+    "model": {
+      "type": "geckolib:geckolib"
+    }
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "targets": {
+    "horus_swap": {}
+  },
+  "passes": [
+    {
+      "vertex_shader": "minecraft:core/screenquad",
+      "fragment_shader": "echoes_show_the_past:post/horus_vision",
+      "inputs": [
+        {
+          "sampler_name": "Scene",
+          "target": "minecraft:main",
+          "bilinear": true
+        }
+      ],
+      "output": "horus_swap",
+      "uniforms": {
+        "HorusConfig": [
+          {
+            "name": "Phase",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "Gold",
+            "type": "vec4",
+            "value": [1.0, 0.62, 0.16, 1.0]
+          },
+          {
+            "name": "Style",
+            "type": "vec4",
+            "value": [0.24, 0.70, 0.54, 0.0]
+          },
+          {
+            "name": "Reserved",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          }
+        ]
+      }
+    },
+    {
+      "vertex_shader": "minecraft:core/screenquad",
+      "fragment_shader": "minecraft:post/blit",
+      "inputs": [
+        {
+          "sampler_name": "In",
+          "target": "horus_swap"
+        }
+      ],
+      "uniforms": {
+        "BlitConfig": [
+          {
+            "name": "ColorModulate",
+            "type": "vec4",
+            "value": [1.0, 1.0, 1.0, 1.0]
+          }
+        ]
+      },
+      "output": "minecraft:main"
+    }
+  ]
+}

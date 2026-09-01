@@ -1,0 +1,30 @@
+{
+  "parent": "echoes_show_the_past:unknown/unknown_crypt",
+  "display": {
+    "icon": {
+      "id": "echoes_show_the_past:timeless_portal"
+    },
+    "title": {
+      "translate": "advancements.echoes_show_the_past.unknown.enter_timeless_void.title"
+    },
+    "description": {
+      "translate": "advancements.echoes_show_the_past.unknown.enter_timeless_void.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "entered_void": {
+      "trigger": "minecraft:changed_dimension",
+      "conditions": {
+        "to": "echoes_show_the_past:timeless_void"
+      }
+    }
+  },
+  "requirements": [
+    ["entered_void"]
+  ],
+  "sends_telemetry_event": false
+}

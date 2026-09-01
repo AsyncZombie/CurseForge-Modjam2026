@@ -1,0 +1,11 @@
+{
+  "type": "echoes_show_the_past:echo_site",
+  "biomes": [
+    "minecraft:plains",
+    "minecraft:sunflower_plains",
+    "minecraft:meadow"
+  ],
+  "site": "echoes_show_the_past:medieval_watchtower",
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}

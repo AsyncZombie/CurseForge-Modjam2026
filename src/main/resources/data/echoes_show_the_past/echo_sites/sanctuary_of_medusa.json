@@ -1,0 +1,28 @@
+{
+  "structure": "echoes_show_the_past:sanctuary_of_medusa",
+  "structure_set": "echoes_show_the_past:sanctuary_of_medusa",
+  "present_template": "echoes_show_the_past:sites/sanctuary_of_medusa_present",
+  "intact_template": "echoes_show_the_past:sites/sanctuary_of_medusa_intact",
+  "default_color": "jade",
+  "sonar_family": "stony",
+  "biome": "echoes_show_the_past:medusa_island",
+  "anchor_heightmap": "sea_level",
+  "anchor_y_offset": -16,
+  "requires_open_ocean": true,
+  "memory_min": [-71, -27, -47],
+  "memory_max": [48, 55, 76],
+  "enabled": true,
+  "requires_harmonic_key": false,
+  "loot": [
+    {"offset": [70, 22, 63], "loot_table": "echoes_show_the_past:chests/medusa/cave"},
+    {"offset": [71, 22, 63], "loot_table": "echoes_show_the_past:chests/medusa/cave"},
+    {"offset": [72, 22, 63], "loot_table": "echoes_show_the_past:chests/medusa/cave"},
+    {"offset": [73, 22, 63], "loot_table": "echoes_show_the_past:chests/medusa/sanctum"},
+    {"offset": [29, 43, 85], "loot_table": "echoes_show_the_past:chests/medusa/port"},
+    {"offset": [33, 44, 71], "loot_table": "echoes_show_the_past:chests/medusa/port"},
+    {"offset": [53, 46, 48], "loot_table": "echoes_show_the_past:chests/medusa/houses"},
+    {"offset": [53, 46, 50], "loot_table": "echoes_show_the_past:chests/medusa/houses"},
+    {"offset": [53, 46, 54], "loot_table": "echoes_show_the_past:chests/medusa/houses"},
+    {"offset": [53, 46, 56], "loot_table": "echoes_show_the_past:chests/medusa/houses"}
+  ]
+}

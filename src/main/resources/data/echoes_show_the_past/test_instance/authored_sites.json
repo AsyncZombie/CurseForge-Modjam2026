@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "echoes_show_the_past:authored_sites",
+  "max_ticks": 40,
+  "structure": "minecraft:empty"
+}

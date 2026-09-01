@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:function",
+  "environment": "minecraft:default",
+  "function": "echoes_show_the_past:template_wave_meshing",
+  "max_ticks": 100,
+  "structure": "minecraft:empty"
+}

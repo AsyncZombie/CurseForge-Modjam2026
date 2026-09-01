@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 20260816,
+    "separation": 7,
+    "spacing": 12
+  },
+  "structures": [
+    {
+      "structure": "echoes_show_the_past:erechtheion",
+      "weight": 1
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "echoes_show_the_past:item/petrified_mob_base",
+    "model": {
+      "type": "echoes_show_the_past:petrified_mob"
+    }
+  }
+}

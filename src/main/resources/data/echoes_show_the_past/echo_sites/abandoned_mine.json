@@ -1,0 +1,29 @@
+{
+  "structure": "echoes_show_the_past:abandoned_mine",
+  "structure_set": "echoes_show_the_past:abandoned_mine",
+  "present_template": "echoes_show_the_past:sites/abandoned_mine_present",
+  "intact_template": "echoes_show_the_past:sites/abandoned_mine_intact",
+  "default_color": "amber",
+  "sonar_family": "mountain",
+  "biome": "echoes_show_the_past:mine_grounds",
+  "anchor_heightmap": "ocean_floor",
+  "anchor_y_offset": 0,
+  "requires_open_ocean": false,
+  "requires_elevated_terrain": false,
+  "memory_min": [-14, -23, -25],
+  "memory_max": [13, 14, 24],
+  "enabled": true,
+  "requires_harmonic_key": false,
+  "loot": [
+    {"offset": [4, 15, 16], "loot_table": "echoes_show_the_past:chests/mine/stores_looted"},
+    {"offset": [6, 15, 12], "loot_table": "echoes_show_the_past:chests/mine/stores_looted"},
+    {"offset": [7, 15, 13], "loot_table": "echoes_show_the_past:chests/mine/stores_looted"},
+    {"offset": [14, 24, 19], "loot_table": "echoes_show_the_past:chests/mine/stores_looted"},
+
+    {"offset": [6, 15, 12], "loot_table": "echoes_show_the_past:chests/mine/stores", "phase": "past"},
+    {"offset": [7, 15, 13], "loot_table": "echoes_show_the_past:chests/mine/stores", "phase": "past"},
+    {"offset": [14, 24, 19], "loot_table": "echoes_show_the_past:chests/mine/stores", "phase": "past"},
+    {"offset": [12, 15, 16], "loot_table": "echoes_show_the_past:chests/mine/cart", "phase": "past"},
+    {"offset": [9, 24, 21], "loot_table": "echoes_show_the_past:chests/mine/cart", "phase": "past"}
+  ]
+}

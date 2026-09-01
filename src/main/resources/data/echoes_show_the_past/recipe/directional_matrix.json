@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [" A ", "AFA", " C "],
+  "key": {
+    "A": "minecraft:amethyst_shard",
+    "C": "minecraft:compass",
+    "F": "echoes_show_the_past:resonant_filament"
+  },
+  "result": {"id": "echoes_show_the_past:directional_matrix", "count": 1}
+}

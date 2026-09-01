@@ -1,0 +1,18 @@
+{
+  "structure": "echoes_show_the_past:unknown_crypt",
+  "structure_set": "echoes_show_the_past:unknown_crypt",
+  "present_template": "echoes_show_the_past:sites/unknown_crypt_present",
+  "intact_template": "echoes_show_the_past:sites/unknown_crypt_intact",
+  "default_color": "violet",
+  "sonar_family": "mountain",
+  "biome": "echoes_show_the_past:crypt_grounds",
+  "anchor_heightmap": "deep_slate",
+  "anchor_y_offset": 0,
+  "requires_open_ocean": false,
+  "requires_elevated_terrain": false,
+  "memory_min": [-19, -1, -19],
+  "memory_max": [19, 29, 19],
+  "enabled": true,
+  "requires_harmonic_key": true,
+  "harmonic_source": [0, 3, 0]
+}

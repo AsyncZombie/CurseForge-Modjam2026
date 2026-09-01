@@ -1,0 +1,6 @@
+{
+  "parent": "echoes_show_the_past:item/medusa_head",
+  "textures": {
+    "particle": "echoes_show_the_past:item/medusa_petrified_head"
+  }
+}

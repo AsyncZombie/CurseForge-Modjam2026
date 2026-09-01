@@ -1,0 +1,11 @@
+{
+  "type": "echoes_show_the_past:timeless_void",
+  "generator": {
+    "type": "minecraft:flat",
+    "settings": {
+      "biome": "minecraft:the_void",
+      "layers": [],
+      "structure_overrides": []
+    }
+  }
+}

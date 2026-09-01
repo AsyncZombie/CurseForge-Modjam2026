@@ -1,0 +1,34 @@
+{
+  "display": {
+    "icon": {
+      "id": "echoes_show_the_past:low_frequency_resonator"
+    },
+    "title": {
+      "translate": "advancements.echoes_show_the_past.root.title"
+    },
+    "description": {
+      "translate": "advancements.echoes_show_the_past.root.description"
+    },
+    "background": "minecraft:gui/advancements/backgrounds/adventure",
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "has_resonator": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "echoes_show_the_past:low_frequency_resonator"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    ["has_resonator"]
+  ],
+  "sends_telemetry_event": false
+}

@@ -1,0 +1,333 @@
+{
+  "targets": {
+    "echo_swap": {}
+  },
+  "passes": [
+    {
+      "vertex_shader": "minecraft:core/screenquad",
+      "fragment_shader": "echoes_show_the_past:post/echo_scan",
+      "inputs": [
+        {
+          "sampler_name": "Scene",
+          "target": "minecraft:main",
+          "bilinear": true
+        },
+        {
+          "sampler_name": "WorldDepth",
+          "target": "minecraft:main",
+          "use_depth_buffer": true
+        },
+        {
+          "sampler_name": "ForegroundDepth",
+          "target": "minecraft:main",
+          "use_depth_buffer": true
+        }
+      ],
+      "output": "echo_swap",
+      "uniforms": {
+        "EchoConfig": [
+          {
+            "name": "TintAndStrength",
+            "type": "vec4",
+            "value": [0.76, 0.94, 1.0, 0.56]
+          },
+          {
+            "name": "GradeSettings",
+            "type": "vec4",
+            "value": [1.0, 0.31, 0.11, 0.0]
+          },
+          {
+            "name": "InverseLevelProjection0",
+            "type": "vec4",
+            "value": [1.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "InverseLevelProjection1",
+            "type": "vec4",
+            "value": [0.0, 1.0, 0.0, 0.0]
+          },
+          {
+            "name": "InverseLevelProjection2",
+            "type": "vec4",
+            "value": [0.0, 0.0, 1.0, 0.0]
+          },
+          {
+            "name": "InverseLevelProjection3",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 1.0]
+          },
+          {
+            "name": "LowFrequencyMeta",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyOrigin0",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyOrigin1",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyOrigin2",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyOrigin3",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyOrigin4",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyOrigin5",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyOrigin6",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyOrigin7",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyOrigin8",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyOrigin9",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyOrigin10",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyOrigin11",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyOrigin12",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyOrigin13",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyOrigin14",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyOrigin15",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyStyle0",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyStyle1",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyStyle2",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyStyle3",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyStyle4",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyStyle5",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyStyle6",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyStyle7",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyStyle8",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyStyle9",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyStyle10",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyStyle11",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyStyle12",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyStyle13",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyStyle14",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyStyle15",
+            "type": "vec4",
+            "value": [0.0, 0.0, 0.0, 0.0]
+          },
+          {
+            "name": "LowFrequencyColor0",
+            "type": "vec4",
+            "value": [0.33, 0.90, 0.95, 1.0]
+          },
+          {
+            "name": "LowFrequencyColor1",
+            "type": "vec4",
+            "value": [0.33, 0.90, 0.95, 1.0]
+          },
+          {
+            "name": "LowFrequencyColor2",
+            "type": "vec4",
+            "value": [0.33, 0.90, 0.95, 1.0]
+          },
+          {
+            "name": "LowFrequencyColor3",
+            "type": "vec4",
+            "value": [0.33, 0.90, 0.95, 1.0]
+          },
+          {
+            "name": "LowFrequencyColor4",
+            "type": "vec4",
+            "value": [0.33, 0.90, 0.95, 1.0]
+          },
+          {
+            "name": "LowFrequencyColor5",
+            "type": "vec4",
+            "value": [0.33, 0.90, 0.95, 1.0]
+          },
+          {
+            "name": "LowFrequencyColor6",
+            "type": "vec4",
+            "value": [0.33, 0.90, 0.95, 1.0]
+          },
+          {
+            "name": "LowFrequencyColor7",
+            "type": "vec4",
+            "value": [0.33, 0.90, 0.95, 1.0]
+          },
+          {
+            "name": "LowFrequencyColor8",
+            "type": "vec4",
+            "value": [0.33, 0.90, 0.95, 1.0]
+          },
+          {
+            "name": "LowFrequencyColor9",
+            "type": "vec4",
+            "value": [0.33, 0.90, 0.95, 1.0]
+          },
+          {
+            "name": "LowFrequencyColor10",
+            "type": "vec4",
+            "value": [0.33, 0.90, 0.95, 1.0]
+          },
+          {
+            "name": "LowFrequencyColor11",
+            "type": "vec4",
+            "value": [0.33, 0.90, 0.95, 1.0]
+          },
+          {
+            "name": "LowFrequencyColor12",
+            "type": "vec4",
+            "value": [0.33, 0.90, 0.95, 1.0]
+          },
+          {
+            "name": "LowFrequencyColor13",
+            "type": "vec4",
+            "value": [0.33, 0.90, 0.95, 1.0]
+          },
+          {
+            "name": "LowFrequencyColor14",
+            "type": "vec4",
+            "value": [0.33, 0.90, 0.95, 1.0]
+          },
+          {
+            "name": "LowFrequencyColor15",
+            "type": "vec4",
+            "value": [0.33, 0.90, 0.95, 1.0]
+          },
+          {
+            "name": "LowFrequencyAim",
+            "type": "vec4",
+            "value": [0.0, 0.0, -1.0, 2.0]
+          }
+        ]
+      }
+    },
+    {
+      "vertex_shader": "minecraft:core/screenquad",
+      "fragment_shader": "minecraft:post/blit",
+      "inputs": [
+        {
+          "sampler_name": "In",
+          "target": "echo_swap"
+        }
+      ],
+      "uniforms": {
+        "BlitConfig": [
+          {
+            "name": "ColorModulate",
+            "type": "vec4",
+            "value": [1.0, 1.0, 1.0, 1.0]
+          }
+        ]
+      },
+      "output": "minecraft:main"
+    }
+  ]
+}

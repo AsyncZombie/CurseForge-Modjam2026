@@ -1,0 +1,7 @@
+{
+  "type": "echoes_show_the_past:echo_site",
+  "biomes": "#minecraft:is_ocean",
+  "site": "echoes_show_the_past:sanctuary_of_medusa",
+  "spawn_overrides": {},
+  "step": "surface_structures"
+}
