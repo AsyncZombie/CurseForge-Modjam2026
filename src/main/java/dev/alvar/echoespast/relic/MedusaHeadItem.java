@@ -10,19 +10,16 @@ import com.geckolib.animation.object.PlayState;
 import com.geckolib.animation.state.AnimationTest;
 import com.geckolib.constant.DataTickets;
 import com.geckolib.constant.dataticket.DataTicket;
-import com.geckolib.renderer.GeoItemRenderer;
 import com.geckolib.util.ClientUtil;
 import com.geckolib.util.GeckoLibUtil;
-import com.google.common.base.Suppliers;
 import dev.alvar.echoespast.EchoesConfig;
 import dev.alvar.echoespast.EchoesShowThePast;
 import dev.alvar.echoespast.entity.UnknownEntity;
-import dev.alvar.echoespast.client.MedusaHeadRenderer;
+import dev.alvar.echoespast.client.MedusaHeadRenderProvider;
 import dev.alvar.echoespast.network.MedusaGazeVisualPayload;
 import dev.alvar.echoespast.network.MedusaPetrifyPayload;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -309,15 +306,7 @@ public class MedusaHeadItem extends RelicItem implements GeoItem {
 
     @Override
     public void createGeoRenderer(Consumer<GeoRenderProvider> consumer) {
-        consumer.accept(new GeoRenderProvider() {
-            private final Supplier<GeoItemRenderer<MedusaHeadItem>> renderer =
-                    Suppliers.memoize(() -> new MedusaHeadRenderer<>(MedusaHeadItem.this));
-
-            @Override
-            public GeoItemRenderer<?> getGeoItemRenderer() {
-                return renderer.get();
-            }
-        });
+        consumer.accept(new MedusaHeadRenderProvider());
     }
 
     @Override

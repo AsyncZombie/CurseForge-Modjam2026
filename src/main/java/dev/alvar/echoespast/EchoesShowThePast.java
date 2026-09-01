@@ -67,11 +67,13 @@ import dev.alvar.echoespast.server.ArenaReconstructionWave;
 import dev.alvar.echoespast.snapshot.EchoSnapshot;
 import dev.alvar.echoespast.snapshot.EchoSnapshotStreamCodec;
 import dev.alvar.echoespast.snapshot.EchoTemplateResolver;
+import dev.alvar.echoespast.world.CryptAccessGate;
 import dev.alvar.echoespast.world.EchoPedestalIndex;
 import dev.alvar.echoespast.world.EchoSitePiece;
 import dev.alvar.echoespast.world.EchoSiteStructure;
 import dev.alvar.echoespast.gametest.EchoGameTests;
 import dev.alvar.echoespast.recipe.PastFragmentForgetRecipe;
+import java.util.List;
 import java.util.function.Consumer;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponentType;
@@ -230,6 +232,13 @@ public final class EchoesShowThePast {
                                     net.minecraft.world.level.Level.OVERWORLD,
                                     net.minecraft.core.BlockPos.ZERO))
                             .serialize(GlobalPos.CODEC.fieldOf("return"))
+                            .copyOnDeath()
+                            .build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<List<GlobalPos>>>
+            TIMELESS_CONSUMED_PORTAL = ATTACHMENTS.register(
+                    "timeless_consumed_portal",
+                    () -> AttachmentType.builder(() -> List.<GlobalPos>of())
+                            .serialize(GlobalPos.CODEC.listOf().fieldOf("cells"))
                             .copyOnDeath()
                             .build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>>
@@ -577,6 +586,7 @@ public final class EchoesShowThePast {
 
         NeoForge.EVENT_BUS.register(EchoProjectionManager.class);
         NeoForge.EVENT_BUS.register(LowFrequencySonarManager.class);
+        NeoForge.EVENT_BUS.register(CryptAccessGate.class);
         NeoForge.EVENT_BUS.register(EchoPedestalIndex.class);
         NeoForge.EVENT_BUS.register(RelicEffects.class);
         NeoForge.EVENT_BUS.register(EyeRevealManager.class);

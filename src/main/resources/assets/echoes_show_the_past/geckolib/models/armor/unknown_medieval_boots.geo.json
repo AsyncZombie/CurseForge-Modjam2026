@@ -1,5 +1,5 @@
 {
-	"format_version": "1.12.0",
+	"format_version": "1.19.0",
 	"minecraft:geometry": [
 		{
 			"description": {
@@ -12,19 +12,80 @@
 			},
 			"bones": [
 				{
-					"name": "armorRightBoot",
+					"name": "leg_right",
+					"pivot": [-1.9, 12, 0]
+				},
+				{
+					"name": "boot_right",
+					"parent": "leg_right",
 					"pivot": [-1.9, 12, 0],
+					"binding": "'rightleg'",
 					"cubes": [
-						{"origin": [-3.9, 0, -2.1], "size": [3.55, 5, 4.2], "inflate": 0.08, "uv": {"up": {"uv": [8, 0], "uv_size": [4, 4]}, "down": {"uv": [8, 0], "uv_size": [4, 4]}, "west": {"uv": [8, 10], "uv_size": [4, 6]}, "north": {"uv": [4, 10], "uv_size": [4, 6]}, "east": {"uv": [0, 10], "uv_size": [4, 6]}, "south": {"uv": [12, 10], "uv_size": [4, 6]}}},
-						{"origin": [-3.95, 0, -3], "size": [3.6, 2.25, 5.2], "inflate": 0.08, "uv": {"up": {"uv": [8, 16], "uv_size": [4, 4]}, "down": {"uv": [8, 16], "uv_size": [4, 4]}, "west": {"uv": [8, 28], "uv_size": [4, 4]}, "north": {"uv": [4, 28], "uv_size": [4, 4]}, "east": {"uv": [0, 28], "uv_size": [4, 4]}, "south": {"uv": [12, 28], "uv_size": [4, 4]}}}
+						{
+							"origin": [-3.9, 0, -2.1],
+							"size": [3.55, 5, 4.2],
+							"inflate": 0.08,
+							"uv": {
+								"north": {"uv": [4, 10], "uv_size": [4, 6]},
+								"east": {"uv": [0, 10], "uv_size": [4, 6]},
+								"south": {"uv": [12, 10], "uv_size": [4, 6]},
+								"west": {"uv": [8, 10], "uv_size": [4, 6]},
+								"up": {"uv": [8, 0], "uv_size": [4, 4]},
+								"down": {"uv": [8, 0], "uv_size": [4, 4]}
+							}
+						},
+						{
+							"origin": [-3.95, 0, -3],
+							"size": [3.6, 2.25, 5.2],
+							"inflate": 0.08,
+							"uv": {
+								"north": {"uv": [4, 28], "uv_size": [4, 4]},
+								"east": {"uv": [0, 28], "uv_size": [4, 4]},
+								"south": {"uv": [12, 28], "uv_size": [4, 4]},
+								"west": {"uv": [8, 28], "uv_size": [4, 4]},
+								"up": {"uv": [8, 16], "uv_size": [4, 4]},
+								"down": {"uv": [8, 16], "uv_size": [4, 4]}
+							}
+						}
 					]
 				},
 				{
-					"name": "armorLeftBoot",
+					"name": "leg_left",
 					"pivot": [1.9, 12, 0],
+					"rotation": [-0.1, 0, 0]
+				},
+				{
+					"name": "boot_left",
+					"parent": "leg_left",
+					"pivot": [1.9, 12, 0],
+					"binding": "'leftleg'",
 					"cubes": [
-						{"origin": [0.35, 0, -2.1], "size": [3.55, 5, 4.2], "inflate": 0.08, "uv": {"up": {"uv": [8, 0], "uv_size": [4, 4]}, "down": {"uv": [8, 0], "uv_size": [4, 4]}, "west": {"uv": [8, 10], "uv_size": [4, 6]}, "north": {"uv": [4, 10], "uv_size": [4, 6]}, "east": {"uv": [0, 10], "uv_size": [4, 6]}, "south": {"uv": [12, 10], "uv_size": [4, 6]}}, "mirror": true},
-						{"origin": [0.35, 0, -3], "size": [3.6, 2.25, 5.2], "inflate": 0.08, "uv": {"up": {"uv": [8, 16], "uv_size": [4, 4]}, "down": {"uv": [8, 16], "uv_size": [4, 4]}, "west": {"uv": [8, 28], "uv_size": [4, 4]}, "north": {"uv": [4, 28], "uv_size": [4, 4]}, "east": {"uv": [0, 28], "uv_size": [4, 4]}, "south": {"uv": [12, 28], "uv_size": [4, 4]}}, "mirror": true}
+						{
+							"origin": [0.35, 0, -2.1],
+							"size": [3.55, 5, 4.2],
+							"inflate": 0.08,
+							"uv": {
+								"north": {"uv": [4, 10], "uv_size": [4, 6]},
+								"east": {"uv": [0, 10], "uv_size": [4, 6]},
+								"south": {"uv": [12, 10], "uv_size": [4, 6]},
+								"west": {"uv": [8, 10], "uv_size": [4, 6]},
+								"up": {"uv": [8, 0], "uv_size": [4, 4]},
+								"down": {"uv": [8, 0], "uv_size": [4, 4]}
+							}
+						},
+						{
+							"origin": [0.35, 0, -3],
+							"size": [3.6, 2.25, 5.2],
+							"inflate": 0.08,
+							"uv": {
+								"north": {"uv": [4, 28], "uv_size": [4, 4]},
+								"east": {"uv": [0, 28], "uv_size": [4, 4]},
+								"south": {"uv": [12, 28], "uv_size": [4, 4]},
+								"west": {"uv": [8, 28], "uv_size": [4, 4]},
+								"up": {"uv": [8, 16], "uv_size": [4, 4]},
+								"down": {"uv": [8, 16], "uv_size": [4, 4]}
+							}
+						}
 					]
 				}
 			]

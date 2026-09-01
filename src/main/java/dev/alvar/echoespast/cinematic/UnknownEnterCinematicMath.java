@@ -1,6 +1,7 @@
 package dev.alvar.echoespast.cinematic;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
@@ -328,52 +329,81 @@ public final class UnknownEnterCinematicMath {
         return smootherstep((float) ((seconds - start) / duration));
     }
 
-    /**
-     * Reconstruction crane: stay on the player's side of the plaza and pull
-     * back/up so the Philosopher's Stone wave reads as a world rewrite.
-     */
-    public static Vec3 eraCamera(Vec3 bossFeet, Vec3 altar, Vec3 audience, double seconds, boolean rising) {
-        float pullBlend = smootherstep((float) (Math.min(seconds, 5.0D) / 5.0D));
-        float heightBlend = smootherstep((float) (Math.min(seconds, 4.0D) / 4.0D));
-        Vec3 focus = altar.lerp(bossFocus(bossFeet), rising ? 0.30D : 0.46D);
-        Vec3 towardAudience = horizontal(audience.subtract(altar));
-        if (towardAudience.lengthSqr() < 1.0E-6D) {
-            towardAudience = new Vec3(1.0D, 0.0D, 0.0D);
-        }
-        Vec3 side = new Vec3(-towardAudience.z, 0.0D, towardAudience.x);
-        double pull = rising
-                ? Mth.lerp(pullBlend, 7.15D, 8.85D)
-                : Mth.lerp(pullBlend, 6.45D, 7.35D);
-        double height = rising
-                ? Mth.lerp(heightBlend, 2.85D, 4.45D)
-                : Mth.lerp(heightBlend, 3.25D, 4.55D);
-        double sway = Math.sin(seconds * 0.22D) * (rising ? 1.15D : 0.72D);
-        return focus
-                .add(towardAudience.scale(pull))
-                .add(side.scale(sway))
-                .add(0.0D, height, 0.0D);
+    /** Center of the complete authored volume, biased slightly below mid-height. */
+    public static Vec3 eraArenaFocus(BlockPos arenaOrigin, Vec3i arenaSize) {
+        double sizeX = Math.max(1, arenaSize.getX());
+        double sizeY = Math.max(1, arenaSize.getY());
+        double sizeZ = Math.max(1, arenaSize.getZ());
+        return new Vec3(
+                arenaOrigin.getX() + sizeX * 0.5D,
+                arenaOrigin.getY() + sizeY * 0.43D,
+                arenaOrigin.getZ() + sizeZ * 0.5D);
     }
 
-    public static Vec3 eraLook(Vec3 bossFeet, Vec3 altar, double seconds, boolean rising) {
-        double towardAltar = rising
-                ? 0.58D + Math.min(seconds, 5.0D) * 0.018D
-                : 0.28D;
-        double lift = rising
-                ? 0.42D + Math.min(seconds, 5.0D) * 0.06D
-                : 0.18D;
-        return bossFocus(bossFeet).lerp(altar, towardAltar).add(0.0D, lift, 0.0D);
+    /**
+     * Full-arena aerial establishing shot. It reaches the overview inside the
+     * shortest reconstruction instead of spending the whole transition near
+     * the player's eye line while already aiming downward.
+     */
+    public static Vec3 eraCamera(
+            BlockPos arenaOrigin,
+            Vec3i arenaSize,
+            double seconds,
+            boolean rising) {
+        Vec3 focus = eraArenaFocus(arenaOrigin, arenaSize);
+        double halfX = Math.max(1.0D, arenaSize.getX() * 0.5D);
+        double halfZ = Math.max(1.0D, arenaSize.getZ() * 0.5D);
+        double horizontalRadius = Math.sqrt(halfX * halfX + halfZ * halfZ);
+        float establish = smootherstep((float) (seconds / 0.90D));
+
+        Vec3 overviewSide = horizontal(new Vec3(-1.0D, 0.0D, -0.52D));
+        double arcDegrees = Mth.lerp(establish, rising ? -3.5D : 3.5D, rising ? 3.5D : -2.0D);
+        overviewSide = rotateHorizontal(overviewSide, Math.toRadians(arcDegrees));
+
+        double finalDistance = horizontalRadius * (rising ? 1.32D : 1.24D);
+        double distance = Mth.lerp(establish, finalDistance * 0.84D, finalDistance);
+        double arenaTop = arenaOrigin.getY() + Math.max(1, arenaSize.getY());
+        double height = Mth.lerp(
+                establish,
+                arenaTop + (rising ? 9.0D : 8.0D),
+                arenaTop + (rising ? 17.0D : 15.0D));
+        return new Vec3(
+                focus.x + overviewSide.x * distance,
+                height,
+                focus.z + overviewSide.z * distance);
+    }
+
+    /** Always aims through the arena volume, never at the altar floor. */
+    public static Vec3 eraLook(
+            BlockPos arenaOrigin,
+            Vec3i arenaSize,
+            double seconds,
+            boolean rising) {
+        Vec3 focus = eraArenaFocus(arenaOrigin, arenaSize);
+        float settle = smootherstep((float) (seconds / 0.90D));
+        double lift = Mth.lerp(settle, rising ? 1.8D : 1.2D, rising ? 0.8D : 0.45D);
+        return focus.add(0.0D, lift, 0.0D);
     }
 
     public static float eraFov(boolean rising) {
-        return rising ? 66.0F : 60.0F;
+        return rising ? 68.0F : 65.0F;
     }
 
     public static double eraFollowOmega(float introBlend) {
-        return Mth.lerp(introBlend, 0.92D, 1.28D);
+        return Mth.lerp(introBlend, 4.35D, 5.40D);
     }
 
     public static double eraLookOmega() {
-        return 2.15D;
+        return 6.20D;
+    }
+
+    private static Vec3 rotateHorizontal(Vec3 vector, double radians) {
+        double cosine = Math.cos(radians);
+        double sine = Math.sin(radians);
+        return new Vec3(
+                vector.x * cosine - vector.z * sine,
+                0.0D,
+                vector.x * sine + vector.z * cosine);
     }
 
     private static Vec3 horizontal(Vec3 vector) {

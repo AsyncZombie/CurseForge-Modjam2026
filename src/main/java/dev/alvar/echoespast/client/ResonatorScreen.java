@@ -48,15 +48,16 @@ public final class ResonatorScreen extends AbstractContainerScreen<ResonatorMenu
     private static final int GOLD_DIM = 0xFF886332;
     private static final int DANGER = 0xFFC47A5A;
 
-    private static final int TITLE_Y = 9;
-    private static final int STATUS_Y = 19;
+    private static final int TITLE_Y = 10;
+    private static final int STATUS_Y = 21;
     private static final int HEADER_TEXT_MAX = 220;
-    private static final int INVENTORY_LABEL_Y = 171;
+    private static final int INVENTORY_LABEL_Y = 166;
+    private static final int SIGNATURES_CAPTION_Y = 101;
 
     private static final int WELL_X = 18;
-    private static final int WELL_Y = 94;
+    private static final int WELL_Y = 96;
     private static final int WELL_WIDTH = 220;
-    private static final int WELL_BOTTOM = 160;
+    private static final int WELL_BOTTOM = 156;
 
     private static final int SIGNATURE_LIST_X = 24;
     private static final int SIGNATURE_LIST_Y = 114;
@@ -418,7 +419,7 @@ public final class ResonatorScreen extends AbstractContainerScreen<ResonatorMenu
                         font,
                         Component.translatable("gui.echoes_show_the_past.signatures"),
                         SIGNATURE_LIST_X,
-                        100,
+                        SIGNATURES_CAPTION_Y,
                         TEXT_MUTED,
                         false);
                 if (menu.discoveredSites().size() > VISIBLE_SIGNATURE_ROWS) {
@@ -432,7 +433,7 @@ public final class ResonatorScreen extends AbstractContainerScreen<ResonatorMenu
                             + 6;
                     int muteAllLeft = ResonatorMenu.MUTE_ALL_BUTTON_X;
                     if (scrollX + font.width(scroll) < muteAllLeft - 4) {
-                        graphics.text(font, scroll, scrollX, 100, TEXT_DIM, false);
+                        graphics.text(font, scroll, scrollX, SIGNATURES_CAPTION_Y, TEXT_DIM, false);
                     }
                 }
                 drawSiteNames(graphics);

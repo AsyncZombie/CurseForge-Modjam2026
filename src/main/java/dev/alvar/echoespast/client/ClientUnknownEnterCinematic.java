@@ -7,6 +7,7 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Input;
@@ -26,6 +27,8 @@ public final class ClientUnknownEnterCinematic {
     private static boolean outro;
     private static int bossId;
     private static BlockPos altarOrigin = BlockPos.ZERO;
+    private static BlockPos arenaOrigin = BlockPos.ZERO;
+    private static Vec3i arenaSize = new Vec3i(1, 1, 1);
     private static byte mode = UnknownEnterCinematicMath.MODE_APPROACH;
     private static int depositStep = -1;
 
@@ -65,6 +68,8 @@ public final class ClientUnknownEnterCinematic {
         outroSeconds = 0.0D;
         bossId = payload.bossId();
         altarOrigin = payload.altarOrigin();
+        arenaOrigin = payload.arenaOrigin();
+        arenaSize = payload.arenaSize();
         mode = payload.mode();
         depositStep = payload.depositStep();
         if (!wasActive) {
@@ -87,6 +92,8 @@ public final class ClientUnknownEnterCinematic {
         initialized = false;
         bossId = 0;
         altarOrigin = BlockPos.ZERO;
+        arenaOrigin = BlockPos.ZERO;
+        arenaSize = new Vec3i(1, 1, 1);
         mode = UnknownEnterCinematicMath.MODE_APPROACH;
         depositStep = -1;
         lastGameTime = Double.NaN;
@@ -229,9 +236,9 @@ public final class ClientUnknownEnterCinematic {
             targetFov = UnknownEnterCinematicMath.shieldBreakFov();
         } else if (era) {
             targetPos = UnknownEnterCinematicMath.eraCamera(
-                    bossFeet, altar, playerEye, introSeconds, rising);
+                    arenaOrigin, arenaSize, introSeconds, rising);
             targetLook = UnknownEnterCinematicMath.eraLook(
-                    bossFeet, altar, introSeconds, rising);
+                    arenaOrigin, arenaSize, introSeconds, rising);
             targetFov = UnknownEnterCinematicMath.eraFov(rising);
         } else if (depositing) {
             targetPos = UnknownEnterCinematicMath.depositCamera(

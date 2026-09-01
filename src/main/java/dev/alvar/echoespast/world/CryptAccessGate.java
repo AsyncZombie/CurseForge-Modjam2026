@@ -3,21 +3,37 @@ package dev.alvar.echoespast.world;
 import dev.alvar.echoespast.EchoesShowThePast;
 import dev.alvar.echoespast.resonance.EchoSiteType;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LadderBlock;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.ExplosionEvent;
+import net.neoforged.neoforge.event.level.PistonEvent;
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 /**
  * Builds and unlocks the authored Unknown crypt entrance.
@@ -25,11 +41,18 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
  * <p>The crypt itself owns the doorway through an {@code entry} data marker.
  * The generated shaft is therefore allowed to change without ever baking a
  * coordinate from the current template into Java.</p>
+ *
+ * <p>The chamber also authors four wall openings as barrier carve masks. Those
+ * become {@code crypt_seal} until the Harmonic Key answers, so the well's 3×3
+ * door is not a hole you can walk around.</p>
  */
 public final class CryptAccessGate {
     public static final String ENTRY_MARKER = "entry";
+    public static final String LOCKED_MESSAGE = "message.echoes_show_the_past.crypt_locked";
     private static final int SHAFT_DISTANCE = 4;
     private static final int CORRIDOR_HEIGHT = 3;
+    private static final String HINT_TICK_TAG = "EchoesCryptLockedHintTick";
+    private static final int HINT_COOLDOWN_TICKS = 20;
 
     private CryptAccessGate() {
     }
@@ -71,6 +94,69 @@ public final class CryptAccessGate {
             }
         }
         return List.copyOf(result);
+    }
+
+    /**
+     * Every authored opening on the four vertical hull faces. Barriers there
+     * are the real crypt doors; the well's 3×3 is only the lowest slice of the
+     * north window.
+     */
+    public static List<BlockPos> hullSealCells(
+            StructureTemplate template,
+            BlockPos templateOrigin,
+            StructurePlaceSettings settings) {
+        Set<BlockPos> result = new LinkedHashSet<>();
+        int sizeX = template.getSize().getX();
+        int sizeZ = template.getSize().getZ();
+        for (StructureTemplate.StructureBlockInfo barrier : template.filterBlocks(
+                templateOrigin,
+                settings,
+                Blocks.BARRIER)) {
+            BlockPos local = barrier.pos().subtract(templateOrigin);
+            if (local.getX() == 0
+                    || local.getX() == sizeX - 1
+                    || local.getZ() == 0
+                    || local.getZ() == sizeZ - 1) {
+                result.add(barrier.pos().immutable());
+            }
+        }
+        for (BlockPos entry : entryMarkers(template, templateOrigin, settings)) {
+            BlockPos local = entry.subtract(templateOrigin);
+            if (local.getX() == 0
+                    || local.getX() == sizeX - 1
+                    || local.getZ() == 0
+                    || local.getZ() == sizeZ - 1) {
+                result.add(entry.immutable());
+            }
+        }
+        return List.copyOf(result);
+    }
+
+    /** Walkable centre of each of the four hull openings. */
+    public static List<BlockPos> doorSentinels(EchoSiteType site, BlockPos anchor) {
+        BoundingBox box = site.memoryBounds(anchor);
+        int midX = Math.floorDiv(box.minX() + box.maxX(), 2);
+        int midZ = Math.floorDiv(box.minZ() + box.maxZ(), 2);
+        int doorY = box.minY() + 2;
+        return List.of(
+                new BlockPos(midX, doorY, box.minZ()),
+                new BlockPos(midX, doorY, box.maxZ()),
+                new BlockPos(box.minX(), doorY, midZ),
+                new BlockPos(box.maxX(), doorY, midZ));
+    }
+
+    public static boolean isSealed(ServerLevel level, EchoSiteType site, BlockPos anchor) {
+        boolean anyLoaded = false;
+        for (BlockPos door : doorSentinels(site, anchor)) {
+            if (!level.hasChunkAt(door)) {
+                continue;
+            }
+            anyLoaded = true;
+            if (level.getBlockState(door).is(EchoesShowThePast.CRYPT_SEAL.get())) {
+                return true;
+            }
+        }
+        return !anyLoaded;
     }
 
     public static BoundingBox accessBounds(BlockPos anchor, BlockPos entry, int surfaceY) {
@@ -182,8 +268,27 @@ public final class CryptAccessGate {
             }
         }
 
-        // Write the seal last so no neighbouring corridor pass can carve it.
+        // Write the well door last so no neighbouring corridor pass can carve it.
         for (BlockPos cell : gateCells(anchor, entry)) {
+            set(level, writable, cell, EchoesShowThePast.CRYPT_SEAL.get().defaultBlockState());
+        }
+    }
+
+    /**
+     * Fills the four authored wall openings after the structure processor has
+     * turned their barriers into air.
+     */
+    public static void sealHullOpenings(
+            ServerLevelAccessor level,
+            StructureTemplate template,
+            BlockPos templateOrigin,
+            StructurePlaceSettings settings,
+            BoundingBox writable) {
+        for (BlockPos cell : hullSealCells(template, templateOrigin, settings)) {
+            if (level instanceof ServerLevel serverLevel
+                    && !serverLevel.getEntitiesOfClass(Player.class, new AABB(cell)).isEmpty()) {
+                continue;
+            }
             set(level, writable, cell, EchoesShowThePast.CRYPT_SEAL.get().defaultBlockState());
         }
     }
@@ -203,37 +308,51 @@ public final class CryptAccessGate {
             return false;
         }
         BlockPos origin = anchor.offset(site.memoryMin());
-        List<BlockPos> entries = entryMarkers(template, origin, new StructurePlaceSettings());
-        List<BlockPos> seals = entries.stream()
-                .flatMap(entry -> gateCells(anchor, entry).stream())
-                .toList();
-        if (seals.isEmpty() || seals.stream().anyMatch(cell -> !level.hasChunkAt(cell))) {
-            return false;
+        StructurePlaceSettings settings = new StructurePlaceSettings();
+        List<BlockPos> entries = entryMarkers(template, origin, settings);
+        Set<BlockPos> seals = new LinkedHashSet<>(hullSealCells(template, origin, settings));
+        for (BlockPos entry : entries) {
+            seals.addAll(gateCells(anchor, entry));
         }
-        int removed = removeSealCells(level, seals);
-        if (removed == 0) {
+        if (seals.isEmpty()) {
             return false;
         }
         for (BlockPos entry : entries) {
+            for (BlockPos cell : gateCells(anchor, entry)) {
+                if (!level.hasChunkAt(cell)) {
+                    return false;
+                }
+            }
+        }
+        int removed = removeSealCells(
+                level,
+                seals.stream().filter(level::hasChunkAt).toList());
+        if (removed == 0) {
+            return false;
+        }
+        for (BlockPos door : doorSentinels(site, anchor)) {
+            if (!level.hasChunkAt(door)) {
+                continue;
+            }
             level.playSound(
                     null,
-                    entry,
+                    door,
                     SoundEvents.BEACON_DEACTIVATE,
                     SoundSource.BLOCKS,
                     1.1F,
                     0.72F);
             level.playSound(
                     null,
-                    entry,
+                    door,
                     SoundEvents.AMETHYST_BLOCK_BREAK,
                     SoundSource.BLOCKS,
                     0.9F,
                     0.82F);
             level.sendParticles(
                     ParticleTypes.REVERSE_PORTAL,
-                    entry.getX() + 0.5,
-                    entry.getY() + 1.5,
-                    entry.getZ() + 0.5,
+                    door.getX() + 0.5,
+                    door.getY() + 1.5,
+                    door.getZ() + 0.5,
                     56,
                     1.15,
                     1.15,
@@ -253,6 +372,170 @@ public final class CryptAccessGate {
             }
         }
         return removed;
+    }
+
+    public static void hintLocked(Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            return;
+        }
+        CompoundTag data = serverPlayer.getPersistentData();
+        int now = serverPlayer.tickCount;
+        if (now - data.getIntOr(HINT_TICK_TAG, Integer.MIN_VALUE / 2) < HINT_COOLDOWN_TICKS) {
+            return;
+        }
+        data.putInt(HINT_TICK_TAG, now);
+        serverPlayer.sendOverlayMessage(Component.translatable(LOCKED_MESSAGE));
+    }
+
+    public static boolean isProtected(ServerLevel level, BlockPos pos) {
+        return sealedCrypt(level, pos) != null;
+    }
+
+    /**
+     * Closes authored wall openings that worldgen left as air, including crypts
+     * generated before the hull seal existed.
+     */
+    public static void maintain(ServerLevel level, BlockPos pos) {
+        EchoSiteType site = EchoSiteType.byId(EchoSiteType.UNKNOWN_CRYPT.id());
+        EchoSitePiece piece = cryptPiece(level, pos);
+        if (site == null || piece == null) {
+            return;
+        }
+        BlockPos anchor = piece.cryptAnchor();
+        BoundingBox chamber = site.memoryBounds(anchor);
+        if (!isSealed(level, site, anchor)) {
+            return;
+        }
+        boolean anyGap = false;
+        for (BlockPos door : doorSentinels(site, anchor)) {
+            if (level.hasChunkAt(door) && level.getBlockState(door).isAir()) {
+                anyGap = true;
+                break;
+            }
+        }
+        if (!anyGap) {
+            return;
+        }
+        StructureTemplate template = level.getStructureManager()
+                .get(site.presentTemplate())
+                .orElse(null);
+        if (template == null) {
+            return;
+        }
+        sealHullOpenings(
+                level,
+                template,
+                anchor.offset(site.memoryMin()),
+                new StructurePlaceSettings(),
+                chamber);
+    }
+
+    @SubscribeEvent
+    public static void onPlayerTick(PlayerTickEvent.Post event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)
+                || player.tickCount % 20 != 0
+                || !(player.level() instanceof ServerLevel level)) {
+            return;
+        }
+        maintain(level, player.blockPosition());
+    }
+
+    private static EchoSitePiece cryptPiece(ServerLevel level, BlockPos pos) {
+        EchoSiteType site = EchoSiteType.byId(EchoSiteType.UNKNOWN_CRYPT.id());
+        if (site == null) {
+            return null;
+        }
+        Structure structure = level.registryAccess()
+                .lookupOrThrow(Registries.STRUCTURE)
+                .getValue(site.structure());
+        if (structure == null) {
+            return null;
+        }
+        StructureStart start = level.structureManager().getStructureWithPieceAt(pos, structure);
+        if (!start.isValid()) {
+            return null;
+        }
+        for (var piece : start.getPieces()) {
+            if (piece instanceof EchoSitePiece echo && site.id().equals(echo.site().id())) {
+                return echo;
+            }
+        }
+        return null;
+    }
+
+    private static SealedCrypt sealedCrypt(ServerLevel level, BlockPos pos) {
+        EchoSiteType site = EchoSiteType.byId(EchoSiteType.UNKNOWN_CRYPT.id());
+        EchoSitePiece piece = cryptPiece(level, pos);
+        if (site == null || piece == null || !site.requiresHarmonicKey()) {
+            return null;
+        }
+        BlockPos anchor = piece.cryptAnchor();
+        return isSealed(level, site, anchor) ? new SealedCrypt(site, anchor) : null;
+    }
+
+    private record SealedCrypt(EchoSiteType site, BlockPos anchor) {
+    }
+
+    @SubscribeEvent
+    public static void onLeftClick(PlayerInteractEvent.LeftClickBlock event) {
+        if (!(event.getLevel() instanceof ServerLevel level)
+                || !isProtected(level, event.getPos())) {
+            return;
+        }
+        hintLocked(event.getEntity());
+        if (!event.getEntity().getAbilities().instabuild) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onBreak(BreakBlockEvent event) {
+        if (!(event.getLevel() instanceof ServerLevel level)
+                || !isProtected(level, event.getPos())) {
+            return;
+        }
+        Player player = event.getPlayer();
+        if (player != null && player.getAbilities().instabuild) {
+            return;
+        }
+        hintLocked(player);
+        event.setNotifyClient(true);
+        event.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public static void onPlace(BlockEvent.EntityPlaceEvent event) {
+        if (!(event.getLevel() instanceof ServerLevel level)
+                || !isProtected(level, event.getPos())) {
+            return;
+        }
+        if (event.getEntity() instanceof Player player && player.getAbilities().instabuild) {
+            return;
+        }
+        event.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public static void onPiston(PistonEvent.Pre event) {
+        if (!(event.getLevel() instanceof ServerLevel level)) {
+            return;
+        }
+        var resolver = event.getStructureHelper();
+        if (resolver == null || !resolver.resolve()) {
+            return;
+        }
+        if (isProtected(level, event.getPos())
+                || resolver.getToPush().stream().anyMatch(pos -> isProtected(level, pos))
+                || resolver.getToDestroy().stream().anyMatch(pos -> isProtected(level, pos))) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onExplosion(ExplosionEvent.Detonate event) {
+        if (event.getLevel() instanceof ServerLevel level) {
+            event.getAffectedBlocks().removeIf(pos -> isProtected(level, pos));
+        }
     }
 
     private static net.minecraft.world.level.block.state.BlockState masonry(BlockPos position) {

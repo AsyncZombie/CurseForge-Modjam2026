@@ -23,11 +23,11 @@ import net.minecraft.world.item.ItemStack;
  *
  * Layout (256×270, same family as Past Echo):
  * <pre>
- *   header     y 8–28
- *   chamber    y 34–88   · modules (84/120/156, 44)
- *   trough     y 70–84   · mode button when matrix installed
- *   well       y 94–160  · toolbar + scrollable signatures
- *   vault      y 166+    · inventory (47, 176)
+ *   header     y 8–31   · title + status
+ *   chamber    y 36–90  · modules (84/120/156, 46); waves stay inside
+ *   trough     y 74–88  · mode button when matrix installed
+ *   well       y 96–156 · toolbar + scrollable signatures
+ *   vault      y 162+   · inventory label, then slots (47, 178)
  * </pre>
  */
 public final class ResonatorMenu extends AbstractContainerMenu {
@@ -37,18 +37,18 @@ public final class ResonatorMenu extends AbstractContainerMenu {
     public static final int IGNORE_BUTTON_BASE = 1_000;
 
     public static final int MODULE_SLOT_X = 84;
-    public static final int MODULE_SLOT_Y = 44;
+    public static final int MODULE_SLOT_Y = 46;
     public static final int MODULE_SLOT_SPACING = 36;
     public static final int PLAYER_INVENTORY_X = 47;
-    public static final int PLAYER_INVENTORY_Y = 176;
+    public static final int PLAYER_INVENTORY_Y = 178;
 
     public static final int MODE_BUTTON_X = 68;
-    public static final int MODE_BUTTON_Y = 70;
+    public static final int MODE_BUTTON_Y = 74;
     public static final int MODE_BUTTON_WIDTH = 120;
     public static final int MODE_BUTTON_HEIGHT = 14;
 
     public static final int MUTE_ALL_BUTTON_X = 148;
-    public static final int MUTE_ALL_BUTTON_Y = 98;
+    public static final int MUTE_ALL_BUTTON_Y = 100;
     public static final int MUTE_ALL_BUTTON_WIDTH = 72;
     public static final int MUTE_ALL_BUTTON_HEIGHT = 12;
 

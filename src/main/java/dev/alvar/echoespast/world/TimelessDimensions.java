@@ -21,10 +21,19 @@ public final class TimelessDimensions {
     public static final Vec3 BOSS_ENTRANCE_SPAWN = new Vec3(-7.5D, 68.0D, 1.0D);
     public static final BlockPos HUB_SPAWN = BlockPos.containing(BOSS_ENTRANCE_SPAWN);
     /**
-     * Exit pad on the south rim of the hub — never toward the plaza center, so it
-     * cannot appear under the player when a cycle ends.
+     * Canonical walking surface. Local Axiom surface Y=6 becomes world Y=63.
      */
-    public static final BlockPos EXIT_PORTAL = HUB_SPAWN.offset(0, -1, -3);
+    public static final int FLOOR_Y = 63;
+    /**
+     * Walk-in exit pad on the south rim, one block above the shared floor.
+     * The portal has no collision, so it must sit on the floor rather than
+     * replace it. Never toward the plaza center, so it cannot appear under
+     * the player when a cycle ends.
+     */
+    public static final BlockPos EXIT_PORTAL = new BlockPos(
+            HUB_SPAWN.getX(),
+            FLOOR_Y + 1,
+            HUB_SPAWN.getZ() - 3);
     /** Authored north-east/root cell of the single 2x2 final-boss altar. */
     public static final BlockPos BOSS_PEDESTAL_ORIGIN = new BlockPos(-36, 64, 0);
     public static final BlockPos PEDESTAL_GREEK = BOSS_PEDESTAL_ORIGIN;
@@ -50,7 +59,6 @@ public final class TimelessDimensions {
      */
     public static final BlockPos MEDIEVAL_ARENA_ORIGIN = ARENA_ORIGIN.below(4);
     public static final Vec3i ARENA_VOLUME = new Vec3i(70, 24, 37);
-    public static final int FLOOR_Y = 63;
 
     private TimelessDimensions() {
     }

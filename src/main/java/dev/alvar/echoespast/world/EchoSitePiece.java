@@ -97,6 +97,14 @@ public final class EchoSitePiece extends TemplateStructurePiece {
                 .addProcessor(BarrierToAirProcessor.INSTANCE);
     }
 
+    public EchoSiteType site() {
+        return site;
+    }
+
+    public BlockPos cryptAnchor() {
+        return anchor();
+    }
+
     private BlockPos anchor() {
         return templatePosition.subtract(site.memoryMin());
     }
@@ -150,6 +158,12 @@ public final class EchoSitePiece extends TemplateStructurePiece {
                     placeSettings)) {
                 CryptAccessGate.build(level, anchor(), entry, surfaceY, writable);
             }
+            CryptAccessGate.sealHullOpenings(
+                    level,
+                    template,
+                    templatePosition,
+                    placeSettings,
+                    writable);
         }
         if (site.blendsIntoTerrain()) {
             EchoSiteTerrainBlend.blend(

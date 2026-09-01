@@ -17,8 +17,12 @@ import dev.alvar.echoespast.network.UnknownBossBarPayload;
 import dev.alvar.echoespast.network.UnknownEnterCinematicPayload;
 import dev.alvar.echoespast.relic.RelicState;
 import dev.alvar.echoespast.mixin.server.StructureTemplateAccessor;
+import dev.alvar.echoespast.world.EchoPedestalIndex;
 import dev.alvar.echoespast.world.TimelessDimensions;
 import dev.alvar.echoespast.world.UnknownMedievalArenaProcessor;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -46,7 +50,6 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
-import net.minecraft.world.Difficulty;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -89,6 +92,8 @@ import org.slf4j.LoggerFactory;
 
 public final class UnknownFightManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(UnknownFightManager.class);
+    private static final UnknownBossTrackingGrace BOSS_TRACKING_GRACE =
+            new UnknownBossTrackingGrace();
     /**
      * Arena wipes must never scatter chests, pots, altar sockets or block loot
      * into the timeless void when eras collapse or the fight resets.
@@ -429,9 +434,8 @@ public final class UnknownFightManager {
         }
         // Never drop the player back onto the entry pad — that instantly re-opens the fight.
         teleport(player, target, safeLandingBesidePortal(target, pos));
+        restoreOverworldPortal(player);
         player.setPortalCooldown();
-        player.sendSystemMessage(Component.translatable(
-                "message.echoes_show_the_past.unknown_fight_exit"));
     }
 
     /** Prefer a neighbouring non-portal tile when the stored return is the entry pad itself. */
@@ -488,8 +492,7 @@ public final class UnknownFightManager {
                     "message.echoes_show_the_past.unknown_fight_occupied"));
             return false;
         }
-        warnIfHostileDamageDisabled(player);
-        storeReturn(player);
+        captureOverworldPortal(player);
         player.setData(EchoesShowThePast.TIMELESS_DEATH_RETURN.get(), false);
         resetSession(server);
         discardUnknowns(timeless);
@@ -501,6 +504,7 @@ public final class UnknownFightManager {
                 TimelessDimensions.BOSS_SPAWN,
                 0.0F);
         if (boss == null) {
+            restoreOverworldPortal(player);
             player.sendSystemMessage(Component.translatable(
                     "message.echoes_show_the_past.unknown_dummy_failed"));
             return false;
@@ -520,15 +524,15 @@ public final class UnknownFightManager {
 
         // The normal encounter always follows the complete canonical chronology.
         encounter.begin(boss.getUUID(), player.getUUID(), UnknownEraSequence.ERA_COUNT);
+        BOSS_TRACKING_GRACE.begin(boss.getUUID(), server.getTickCount());
         updateBossBar(encounter, boss, player);
         syncEnterCinematic(player, boss, encounter);
-        player.sendSystemMessage(Component.translatable(
-                "message.echoes_show_the_past.unknown_fight_begin"));
         return true;
     }
 
     public static void resetSession(MinecraftServer server) {
         ArenaReconstructionWave.cancel();
+        BOSS_TRACKING_GRACE.clear();
         ServerLevel timeless = server.getLevel(TimelessDimensions.TIMELESS_VOID);
         if (timeless == null) {
             return;
@@ -989,9 +993,6 @@ public final class UnknownFightManager {
         } else {
             boss.setInvulnerable(false);
         }
-        level.players().forEach(player -> player.sendSystemMessage(Component.translatable(
-                "message.echoes_show_the_past.unknown_era_materialize",
-                encounter.nextEraIndex() + 1)));
     }
 
     /** Combat weapon by era. Stone is only the pedestal channel prop. */
@@ -1117,7 +1118,7 @@ public final class UnknownFightManager {
         }
         saved.markStoneGranted(player.getUUID());
         UnknownAdvancements.awardDefeatAndStone(player);
-        player.sendSystemMessage(Component.translatable(
+        player.sendOverlayMessage(Component.translatable(
                 "message.echoes_show_the_past.unknown_stone_granted"));
     }
 
@@ -1171,21 +1172,6 @@ public final class UnknownFightManager {
                 RandomSource.create(level.getSeed() ^ templateId.hashCode()),
                 ARENA_MUTATION_FLAGS);
         return true;
-    }
-
-    /**
-     * Preserve vanilla server policy, but never let a non-damaging test setup
-     * masquerade as a broken combat implementation.
-     */
-    private static void warnIfHostileDamageDisabled(ServerPlayer player) {
-        if (player.level().getDifficulty() == Difficulty.PEACEFUL) {
-            player.sendSystemMessage(Component.translatable(
-                    "message.echoes_show_the_past.unknown_combat_peaceful"));
-        }
-        if (player.getAbilities().invulnerable) {
-            player.sendSystemMessage(Component.translatable(
-                    "message.echoes_show_the_past.unknown_combat_invulnerable"));
-        }
     }
 
     public static void clearArena(ServerLevel level, BlockPos origin, Vec3i size) {
@@ -2072,8 +2058,6 @@ public final class UnknownFightManager {
         }
         player.setData(EchoesShowThePast.TIMELESS_DEATH_RETURN.get(), true);
         resetSession(player.level().getServer());
-        player.sendSystemMessage(Component.translatable(
-                "message.echoes_show_the_past.unknown_fight_reset"));
     }
 
     @SubscribeEvent
@@ -2094,6 +2078,7 @@ public final class UnknownFightManager {
         }
         ServerLevel timeless = player.level().getServer().getLevel(TimelessDimensions.TIMELESS_VOID);
         if (timeless != null && encounter(timeless).owns(player.getUUID())) {
+            restoreOverworldPortal(player);
             resetSession(player.level().getServer());
         }
     }
@@ -2276,8 +2261,6 @@ public final class UnknownFightManager {
         boss.setInvulnerable(false);
         equipEraWeapon(boss);
         updateBossBar(encounter, boss, owner(level, encounter));
-        level.players().forEach(player -> player.sendSystemMessage(Component.translatable(
-                "message.echoes_show_the_past.unknown_ruins")));
     }
 
     private static void beginMedievalShieldBreak(
@@ -2450,8 +2433,6 @@ public final class UnknownFightManager {
             encounter.setNextEraIndex(UnknownEraSequence.ERA_COUNT);
             encounter.setState(Phase.VOID_VULNERABLE, Action.WAITING);
             updateBossBar(encounter, boss, owner(level, encounter));
-            level.players().forEach(player -> player.sendSystemMessage(Component.translatable(
-                    "message.echoes_show_the_past.unknown_review_cycle_done")));
             return;
         }
         if (encounter.nextEraIndex() >= UnknownEraSequence.ERA_COUNT) {
@@ -2465,8 +2446,6 @@ public final class UnknownFightManager {
         boss.getNavigation().stop();
         boss.setTarget(null);
         updateBossBar(encounter, boss, owner(level, encounter));
-        level.players().forEach(player -> player.sendSystemMessage(Component.translatable(
-                "message.echoes_show_the_past.unknown_era_stun")));
     }
 
     /**
@@ -2481,7 +2460,7 @@ public final class UnknownFightManager {
         if (!encounter.controls(boss.getUUID()) || encounter.executionResolved()) {
             return;
         }
-        boolean started = encounter.beginExecution();
+        encounter.beginExecution();
         // Keep the fall camera active and switch modes in-place; sending an
         // inactive packet here would briefly cut back to first person.
         boss.setRitualChanneling(false);
@@ -2513,10 +2492,6 @@ public final class UnknownFightManager {
         holdCinematicAudience(owner);
         syncEnterCinematic(owner, boss, encounter);
         updateBossBar(encounter, boss, owner);
-        if (started) {
-            level.players().forEach(player -> player.sendSystemMessage(Component.translatable(
-                    "message.echoes_show_the_past.unknown_void_execution")));
-        }
     }
 
     private static void tickVoidExecution(
@@ -2950,9 +2925,21 @@ public final class UnknownFightManager {
         // UUID lookup only sees tracked entities. A boss spawned into a chunk that is
         // not yet player-accessible is invisible to getEntity(UUID) for a tick and
         // used to eject the fighter immediately after /echoes unknown enter.
-        boolean bossValid = encounter.phase() == Phase.DEAD
-                || findEncounterBoss(timeless, encounter) != null;
+        UnknownEntity trackedBoss = encounter.phase() == Phase.DEAD
+                ? null
+                : findEncounterBoss(timeless, encounter);
+        boolean bossValid = encounter.phase() == Phase.DEAD || trackedBoss != null;
         if (ownerValid && bossValid) {
+            if (trackedBoss != null) {
+                BOSS_TRACKING_GRACE.clear();
+            }
+            return true;
+        }
+        if (ownerValid
+                && BOSS_TRACKING_GRACE.allows(encounter.bossId(), server.getTickCount())) {
+            LOGGER.debug(
+                    "Waiting for freshly spawned Unknown {} to enter the tracked entity index",
+                    encounter.bossId());
             return true;
         }
         LOGGER.warn(
@@ -2962,8 +2949,6 @@ public final class UnknownFightManager {
                 encounter.phase());
         resetSession(server);
         if (ownerValid) {
-            owner.sendSystemMessage(Component.translatable(
-                    "message.echoes_show_the_past.unknown_fight_reset"));
             returnPlayer(owner);
         }
         return false;
@@ -3185,10 +3170,14 @@ public final class UnknownFightManager {
         return x < minimumX || x > maximumX || z < minimumZ || z > maximumZ;
     }
 
-    /** Single floor pad on the hub rim — not a fake portal frame wall. */
+    /** Single walk-in pad on the hub floor — not a fake portal frame wall. */
     private static void placeExitPortal(ServerLevel level) {
         clearExitPortals(level);
         BlockPos pad = TimelessDimensions.EXIT_PORTAL;
+        BlockPos floor = pad.below();
+        if (level.getBlockState(floor).getCollisionShape(level, floor).isEmpty()) {
+            level.setBlock(floor, Blocks.BLACKSTONE.defaultBlockState(), 3);
+        }
         level.setBlock(pad, EchoesShowThePast.TIMELESS_PORTAL.get().defaultBlockState(), 3);
         nudgePlayersOffPortal(level, pad);
     }
@@ -3197,6 +3186,8 @@ public final class UnknownFightManager {
     private static void clearExitPortals(ServerLevel level) {
         BlockPos[] pads = {
             TimelessDimensions.EXIT_PORTAL,
+            // Previous floating pad (hub spawn Y − 1) from before the floor sit.
+            TimelessDimensions.HUB_SPAWN.offset(0, -1, -3),
             // Legacy plaza pad from the first hub layout (HUB_SPAWN + (0,-1,12)).
             TimelessDimensions.HUB_SPAWN.offset(0, -1, 12)
         };
@@ -3218,9 +3209,124 @@ public final class UnknownFightManager {
     }
 
     private static void storeReturn(ServerPlayer player) {
+        captureOverworldPortal(player);
+    }
+
+    /**
+     * Stores a safe crypt landing and removes the Overworld pad so a defeat
+     * return cannot fall back through the still-active portal.
+     */
+    public static void captureOverworldPortal(ServerPlayer player) {
+        if (!(player.level() instanceof ServerLevel level)
+                || level.dimension().equals(TimelessDimensions.TIMELESS_VOID)) {
+            player.setData(
+                    EchoesShowThePast.TIMELESS_RETURN.get(),
+                    GlobalPos.of(player.level().dimension(), player.blockPosition().immutable()));
+            return;
+        }
+        List<BlockPos> pad = collectOverworldPad(level, player.blockPosition());
+        BlockPos landing = pad.isEmpty()
+                ? player.blockPosition().immutable()
+                : safeReturnBesidePad(level, pad);
         player.setData(
                 EchoesShowThePast.TIMELESS_RETURN.get(),
-                GlobalPos.of(player.level().dimension(), player.blockPosition().immutable()));
+                GlobalPos.of(level.dimension(), landing));
+        if (!pad.isEmpty()) {
+            consumeOverworldPad(level, pad);
+            player.setData(
+                    EchoesShowThePast.TIMELESS_CONSUMED_PORTAL.get(),
+                    pad.stream()
+                            .map(cell -> GlobalPos.of(level.dimension(), cell))
+                            .toList());
+        }
+    }
+
+    public static List<BlockPos> collectOverworldPad(ServerLevel level, BlockPos origin) {
+        BlockPos start = origin;
+        if (!level.getBlockState(start).is(EchoesShowThePast.TIMELESS_PORTAL.get())) {
+            start = origin.below();
+        }
+        if (!level.getBlockState(start).is(EchoesShowThePast.TIMELESS_PORTAL.get())) {
+            return List.of();
+        }
+        ArrayDeque<BlockPos> queue = new ArrayDeque<>();
+        HashSet<BlockPos> found = new HashSet<>();
+        queue.add(start.immutable());
+        found.add(start.immutable());
+        while (!queue.isEmpty() && found.size() < 9) {
+            BlockPos current = queue.removeFirst();
+            for (Direction direction : Direction.Plane.HORIZONTAL) {
+                BlockPos next = current.relative(direction);
+                if (next.getY() != start.getY()
+                        || found.contains(next)
+                        || !level.getBlockState(next).is(EchoesShowThePast.TIMELESS_PORTAL.get())) {
+                    continue;
+                }
+                BlockPos frozen = next.immutable();
+                found.add(frozen);
+                queue.add(frozen);
+            }
+        }
+        return List.copyOf(found);
+    }
+
+    public static BlockPos safeReturnBesidePad(ServerLevel level, List<BlockPos> pad) {
+        BlockPos sample = pad.getFirst();
+        int minX = pad.stream().mapToInt(BlockPos::getX).min().orElse(sample.getX());
+        int maxX = pad.stream().mapToInt(BlockPos::getX).max().orElse(sample.getX());
+        int minZ = pad.stream().mapToInt(BlockPos::getZ).min().orElse(sample.getZ());
+        int maxZ = pad.stream().mapToInt(BlockPos::getZ).max().orElse(sample.getZ());
+        int y = sample.getY();
+        int midX = Math.floorDiv(minX + maxX, 2);
+        int midZ = Math.floorDiv(minZ + maxZ, 2);
+        BlockPos[] candidates = {
+            new BlockPos(midX, y, minZ - 3),
+            new BlockPos(midX, y, minZ - 2),
+            new BlockPos(midX, y, maxZ + 3),
+            new BlockPos(midX - 3, y, midZ),
+            new BlockPos(midX + 3, y, midZ)
+        };
+        for (BlockPos candidate : candidates) {
+            BlockState ground = level.getBlockState(candidate.below());
+            BlockState body = level.getBlockState(candidate);
+            BlockState head = level.getBlockState(candidate.above());
+            if (!ground.getCollisionShape(level, candidate.below()).isEmpty()
+                    && body.getCollisionShape(level, candidate).isEmpty()
+                    && head.getCollisionShape(level, candidate.above()).isEmpty()
+                    && !body.liquid()) {
+                return candidate;
+            }
+        }
+        return new BlockPos(midX, y, minZ - 3);
+    }
+
+    public static void consumeOverworldPad(ServerLevel level, List<BlockPos> pad) {
+        for (BlockPos cell : pad) {
+            if (level.getBlockState(cell).is(EchoesShowThePast.TIMELESS_PORTAL.get())) {
+                level.setBlock(cell, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+                EchoPedestalIndex.refresh(level, cell);
+            }
+        }
+    }
+
+    public static void restoreOverworldPortal(ServerPlayer player) {
+        List<GlobalPos> cells = player.getData(EchoesShowThePast.TIMELESS_CONSUMED_PORTAL.get());
+        if (cells == null || cells.isEmpty()) {
+            return;
+        }
+        MinecraftServer server = player.level().getServer();
+        var portal = EchoesShowThePast.TIMELESS_PORTAL.get().defaultBlockState();
+        for (GlobalPos cell : cells) {
+            ServerLevel level = server.getLevel(cell.dimension());
+            if (level == null || !level.hasChunkAt(cell.pos())) {
+                continue;
+            }
+            if (level.getBlockState(cell.pos()).isAir() || level.getBlockState(cell.pos()).liquid()) {
+                level.setBlock(cell.pos(), portal, Block.UPDATE_ALL);
+                EchoPedestalIndex.refresh(level, cell.pos());
+            }
+        }
+        player.setData(EchoesShowThePast.TIMELESS_CONSUMED_PORTAL.get(), List.of());
     }
 
     private static void teleportFacingAltar(ServerPlayer player, ServerLevel timeless) {
@@ -3290,8 +3396,6 @@ public final class UnknownFightManager {
         boss.setInvulnerable(false);
         releaseEraPresentation(level, boss);
         updateBossBar(encounter, boss, owner);
-        level.players().forEach(player -> player.sendSystemMessage(
-                Component.translatable("message.echoes_show_the_past.unknown_ruins")));
     }
 
     private static void syncEnterCinematic(
@@ -3326,6 +3430,11 @@ public final class UnknownFightManager {
                     UnknownEnterCinematicMath.MODE_EXECUTION,
                     -1);
         } else if (boss != null && wantsEraLens(encounter)) {
+            ArenaBounds bounds = boss.level() instanceof ServerLevel level
+                    ? arenaBounds(level)
+                    : new ArenaBounds(
+                            TimelessDimensions.ARENA_ORIGIN,
+                            TimelessDimensions.ARENA_VOLUME);
             payload = new UnknownEnterCinematicPayload(
                     true,
                     boss.getId(),
@@ -3333,7 +3442,9 @@ public final class UnknownFightManager {
                     eraLensRising
                             ? UnknownEnterCinematicMath.MODE_ERA_RISE
                             : UnknownEnterCinematicMath.MODE_ERA_FALL,
-                    -1);
+                    -1,
+                    bounds.origin(),
+                    bounds.size());
         } else {
             payload = UnknownEnterCinematicPayload.inactive();
         }

@@ -7,38 +7,17 @@ import dev.alvar.echoespast.snapshot.EchoSnapshot;
 import java.util.function.Consumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
-import net.minecraft.world.level.Level;
 
 /**
  * A crystallized past. Alone it only stores; a Past Echo vessel projects it.
  */
 public final class PastFragmentItem extends Item {
-    private static final int MESSAGE_COOLDOWN_TICKS = 10;
-
     public PastFragmentItem(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
-        if (player.getCooldowns().isOnCooldown(stack)) {
-            return InteractionResult.CONSUME;
-        }
-        if (!level.isClientSide()) {
-            player.getCooldowns().addCooldown(stack, MESSAGE_COOLDOWN_TICKS);
-            player.sendSystemMessage(Component.translatable(
-                            "message.echoes_show_the_past.fragment_needs_vessel")
-                    .withStyle(ChatFormatting.GRAY));
-        }
-        return InteractionResult.SUCCESS;
     }
 
     @Override

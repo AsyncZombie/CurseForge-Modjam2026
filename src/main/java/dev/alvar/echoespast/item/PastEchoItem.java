@@ -80,19 +80,19 @@ public final class PastEchoItem extends Item {
         EchoProjectionAccess.Result access = EchoProjectionAccess.validate(
                 serverLevel.dimension(), player.position(), snapshot, maxDistance);
         if (access == EchoProjectionAccess.Result.WRONG_DIMENSION) {
-            player.sendSystemMessage(Component.translatable("message.echoes_show_the_past.wrong_dimension")
+            player.sendOverlayMessage(Component.translatable("message.echoes_show_the_past.wrong_dimension")
                     .withStyle(ChatFormatting.RED));
             return InteractionResult.CONSUME;
         }
         if (access == EchoProjectionAccess.Result.TOO_FAR) {
-            player.sendSystemMessage(Component.translatable("message.echoes_show_the_past.too_far")
+            player.sendOverlayMessage(Component.translatable("message.echoes_show_the_past.too_far")
                     .withStyle(ChatFormatting.RED));
             return InteractionResult.CONSUME;
         }
 
         boolean active = EchoProjectionManager.toggle(serverPlayer, snapshot);
         player.getCooldowns().addCooldown(stack, TOGGLE_COOLDOWN_TICKS);
-        player.sendSystemMessage(Component.translatable(active
+        player.sendOverlayMessage(Component.translatable(active
                 ? "message.echoes_show_the_past.projecting"
                 : "message.echoes_show_the_past.stopped"));
         if (active) {
@@ -155,7 +155,7 @@ public final class PastEchoItem extends Item {
                 EchoesConfig.CAPTURE_RADIUS.getAsInt(),
                 EchoesConfig.MAX_CAPTURED_BLOCKS.getAsInt());
         if (captured.isEmpty()) {
-            player.sendSystemMessage(Component.translatable("message.echoes_show_the_past.too_large")
+            player.sendOverlayMessage(Component.translatable("message.echoes_show_the_past.too_large")
                     .withStyle(ChatFormatting.RED));
             return InteractionResult.CONSUME;
         }
@@ -174,7 +174,7 @@ public final class PastEchoItem extends Item {
         }
 
         player.getCooldowns().addCooldown(stack, TOGGLE_COOLDOWN_TICKS);
-        player.sendSystemMessage(Component.translatable(
+        player.sendOverlayMessage(Component.translatable(
                 "message.echoes_show_the_past.captured",
                 captured.get().blocks().size()));
         level.playSound(

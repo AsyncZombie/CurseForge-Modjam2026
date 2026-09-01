@@ -72,6 +72,7 @@ import dev.alvar.echoespast.server.MaterializedEchoSavedData;
 import dev.alvar.echoespast.server.ArenaReconstructionWave;
 import dev.alvar.echoespast.server.RelicControlManager;
 import dev.alvar.echoespast.server.UnknownEncounterSavedData;
+import dev.alvar.echoespast.server.UnknownBossTrackingGrace;
 import dev.alvar.echoespast.server.UnknownFightSavedData;
 import dev.alvar.echoespast.server.UnknownFightManager;
 import dev.alvar.echoespast.server.UnknownMedievalVanguard;
@@ -257,6 +258,9 @@ public final class EchoGameTests {
                 "unknown_hostile_damage_delivery",
                 () -> EchoGameTests::unknownHostileDamageDelivery);
         functions.register("unknown_peaceful_persistence", () -> EchoGameTests::unknownPeacefulPersistence);
+        functions.register(
+                "unknown_reentry_tracking_grace",
+                () -> EchoGameTests::unknownReentryTrackingGrace);
         functions.register("unknown_pedestal_approach", () -> EchoGameTests::unknownPedestalApproach);
         functions.register("unknown_greek_arena_assets", () -> EchoGameTests::unknownGreekArenaAssets);
         functions.register("unknown_greek_combat_geometry", () -> EchoGameTests::unknownGreekCombatGeometry);
@@ -562,32 +566,62 @@ public final class EchoGameTests {
                 UnknownFightManager.RITUAL_OFFER_PLACE_TICK
                         < UnknownFightManager.RITUAL_OFFER_CYCLE_TICKS,
                 "the offering place beat must land inside its animation cycle");
-        Vec3 eraAudience = new Vec3(-10.5D, 66.62D, -13.5D);
         Vec3 eraBoss = new Vec3(-33.5D, 64.0D, 0.5D);
+        BlockPos eraArenaOrigin = TimelessDimensions.MEDIEVAL_ARENA_ORIGIN;
+        Vec3i eraArenaSize = new Vec3i(70, 39, 37);
+        Vec3 eraFocus = UnknownEnterCinematicMath.eraArenaFocus(
+                eraArenaOrigin, eraArenaSize);
         Vec3 eraRise = UnknownEnterCinematicMath.eraCamera(
-                eraBoss, altar, eraAudience, 2.5D, true);
+                eraArenaOrigin, eraArenaSize, 2.5D, true);
         Vec3 eraFall = UnknownEnterCinematicMath.eraCamera(
-                eraBoss, altar, eraAudience, 2.5D, false);
+                eraArenaOrigin, eraArenaSize, 2.5D, false);
+        Vec3 eraLook = UnknownEnterCinematicMath.eraLook(
+                eraArenaOrigin, eraArenaSize, 2.5D, true);
         Vec3 deposit = UnknownEnterCinematicMath.depositCamera(eraBoss, altar, 0, 0.0D);
         helper.assertTrue(
-                eraRise.y > eraBoss.y + 2.4D,
-                "the era crane must look down onto the reconstruction");
+                eraRise.y >= eraArenaOrigin.getY() + eraArenaSize.getY() + 16.5D,
+                "the era lens must establish above the tallest authored arena block");
         helper.assertTrue(
-                eraRise.distanceTo(altar) > deposit.distanceTo(altar),
-                "the reconstruction shot must pull back past the fragment orbit");
-        Vec3 riseFromAltar = new Vec3(eraRise.x - altar.x, 0.0D, eraRise.z - altar.z);
-        Vec3 audienceFromAltar = new Vec3(eraAudience.x - altar.x, 0.0D, eraAudience.z - altar.z);
+                eraRise.distanceTo(eraFocus) > 55.0D
+                        && eraRise.distanceTo(altar) > deposit.distanceTo(altar),
+                "the aerial overview must pull back far enough to frame the complete footprint");
         helper.assertTrue(
-                riseFromAltar.dot(audienceFromAltar) > 0.0D,
-                "the era crane stays on the player's side of the plaza");
+                Math.abs(eraFocus.x - (-5.0D)) < 1.0E-6D
+                        && Math.abs(eraFocus.z - 0.5D) < 1.0E-6D,
+                "the transition must focus the real arena centre instead of the western altar");
+        float aerialPitch = UnknownEnterCinematicMath.pitchToward(eraRise, eraLook);
         helper.assertTrue(
-                eraFall.distanceTo(UnknownEnterCinematicMath.bossFocus(eraBoss))
-                        < eraRise.distanceTo(UnknownEnterCinematicMath.bossFocus(eraBoss)),
-                "collapse keeps the silhouette closer than a rising world");
+                eraLook.y > TimelessDimensions.FLOOR_Y + 6.0D
+                        && aerialPitch > 25.0F
+                        && aerialPitch < 55.0F,
+                "the aerial lens must look through the arena volume, not vertically into the floor");
+        helper.assertTrue(
+                eraFall.distanceTo(eraFocus) < eraRise.distanceTo(eraFocus),
+                "the collapse overview may sit slightly closer while retaining the whole arena");
         helper.assertTrue(
                 UnknownEnterCinematicMath.eraFov(true)
                         > UnknownEnterCinematicMath.depositFov(0),
                 "a rising era must widen the lens to show the wave");
+        helper.assertTrue(
+                UnknownEnterCinematicMath.eraFollowOmega(0.0F) > 4.0D
+                        && UnknownEnterCinematicMath.eraLookOmega() > 6.0D,
+                "the overview must settle before the shortest reconstruction finishes");
+        UnknownEnterCinematicPayload eraPayload = new UnknownEnterCinematicPayload(
+                true,
+                19,
+                TimelessDimensions.BOSS_PEDESTAL_ORIGIN,
+                UnknownEnterCinematicMath.MODE_ERA_RISE,
+                -1,
+                eraArenaOrigin,
+                eraArenaSize);
+        helper.assertValueEqual(
+                eraPayload.arenaOrigin(),
+                eraArenaOrigin,
+                "the owner payload must carry the runtime arena origin");
+        helper.assertValueEqual(
+                eraPayload.arenaSize(),
+                eraArenaSize,
+                "the owner payload must carry the complete runtime arena size");
         helper.assertTrue(
                 UnknownEnterCinematicMath.isEraMode(UnknownEnterCinematicMath.MODE_ERA_RISE)
                         && UnknownEnterCinematicMath.isEraMode(
@@ -4808,9 +4842,12 @@ public final class EchoGameTests {
                 TimelessDimensions.HUB_SPAWN,
                 "block-based fallback and exact entrance position must agree");
         helper.assertValueEqual(
-                TimelessDimensions.HUB_SPAWN.offset(0, -1, -3),
+                new BlockPos(
+                        TimelessDimensions.HUB_SPAWN.getX(),
+                        TimelessDimensions.FLOOR_Y + 1,
+                        TimelessDimensions.HUB_SPAWN.getZ() - 3),
                 TimelessDimensions.EXIT_PORTAL,
-                "the exit pad must sit on the south hub rim, not the plaza centre");
+                "the exit pad must sit on the south hub floor, not float above it");
         helper.assertTrue(
                 TimelessDimensions.EXIT_PORTAL.getZ() < TimelessDimensions.HUB_SPAWN.getZ(),
                 "the exit pad must stay south of hub spawn so cycle-end cannot eject the fighter");
@@ -5094,6 +5131,49 @@ public final class EchoGameTests {
         } finally {
             server.setDifficulty(previous, true);
         }
+        helper.succeed();
+    }
+
+    private static void unknownReentryTrackingGrace(GameTestHelper helper) {
+        UUID defeatedBoss = UUID.fromString("cecfb365-b91f-42d1-9fe0-5fc3275d0371");
+        UUID replacementBoss = UUID.fromString("5aed34ba-df58-4bf3-83b7-6261a6e1d12f");
+        UUID owner = UUID.fromString("e8dca73a-99bc-4f30-8daa-743b905cf44b");
+
+        UnknownEncounterSavedData encounter = new UnknownEncounterSavedData();
+        encounter.begin(defeatedBoss, owner, UnknownEraSequence.ERA_COUNT);
+        encounter.setState(UnknownFightManager.Phase.DEAD, UnknownFightManager.Action.DEAD);
+        encounter.setThresholdIndex(UnknownEraSequence.STAGE_COUNT);
+        encounter.reset();
+        encounter.begin(replacementBoss, owner, UnknownEraSequence.ERA_COUNT);
+
+        helper.assertTrue(
+                encounter.controls(replacementBoss) && !encounter.controls(defeatedBoss),
+                "re-entering after a completed attempt must bind a fresh boss UUID");
+        helper.assertValueEqual(
+                encounter.phase(),
+                UnknownFightManager.Phase.CINEMATIC_WALK,
+                "a repeated fight must restart at the entrance cinematic");
+        helper.assertValueEqual(
+                encounter.thresholdIndex(),
+                0,
+                "a repeated fight must not inherit the previous attempt's final threshold");
+
+        UnknownBossTrackingGrace grace = new UnknownBossTrackingGrace(40);
+        grace.begin(replacementBoss, 100L);
+        helper.assertTrue(
+                grace.allows(replacementBoss, 100L)
+                        && grace.allows(replacementBoss, 139L),
+                "the replacement boss must receive the complete forty-tick tracking window");
+        helper.assertFalse(
+                grace.allows(defeatedBoss, 100L),
+                "the grace period must never cover a stale boss from the previous attempt");
+        helper.assertFalse(
+                grace.allows(replacementBoss, 140L),
+                "a genuinely missing boss must abort once the bounded grace period expires");
+        grace.clear();
+        helper.assertFalse(
+                grace.allows(replacementBoss, 101L),
+                "an explicit session reset must clear the tracking grace immediately");
         helper.succeed();
     }
 
@@ -8997,13 +9077,21 @@ public final class EchoGameTests {
         int maxPortalY = portals.stream().mapToInt(BlockPos::getY).max().orElseThrow();
         int minPortalZ = portals.stream().mapToInt(BlockPos::getZ).min().orElseThrow();
         int maxPortalZ = portals.stream().mapToInt(BlockPos::getZ).max().orElseThrow();
+        helper.assertValueEqual(minPortalY, maxPortalY, "the authored pad must stay on one layer");
         helper.assertValueEqual(
                 new BlockPos(
                         (minPortalX + maxPortalX) / 2,
-                        (minPortalY + maxPortalY) / 2,
+                        minPortalY,
+                        (minPortalZ + maxPortalZ) / 2),
+                anchor.offset(0, 3, 0),
+                "the template still authors the raised 3x3 above the lava pit");
+        helper.assertValueEqual(
+                new BlockPos(
+                        (minPortalX + maxPortalX) / 2,
+                        anchor.getY() + 1,
                         (minPortalZ + maxPortalZ) / 2),
                 anchor.offset(site.harmonicSource()),
-                "the Harmonic Key must lock onto the centre of the Timeless Portal pad");
+                "the Harmonic Key must lock onto the settled floor-level pad");
         List<BlockPos> entries = CryptAccessGate.entryMarkers(
                 present,
                 templateOrigin,
@@ -9019,11 +9107,31 @@ public final class EchoGameTests {
                 Direction.NORTH,
                 "the shaft must extend away from the crypt centre");
         List<BlockPos> seal = CryptAccessGate.gateCells(anchor, entry);
-        helper.assertValueEqual(seal.size(), 9, "the seal must fill a three-wide by three-high doorway");
+        helper.assertValueEqual(seal.size(), 9, "the well door must fill a three-wide by three-high doorway");
         helper.assertValueEqual(
                 seal.stream().distinct().count(),
                 9L,
-                "every seal cell must be unique");
+                "every well-door seal cell must be unique");
+        List<BlockPos> hull = CryptAccessGate.hullSealCells(
+                present,
+                templateOrigin,
+                new StructurePlaceSettings());
+        helper.assertValueEqual(
+                hull.size(),
+                732,
+                "the four authored wall openings must become a complete harmonic seal");
+        helper.assertValueEqual(
+                hull.stream().map(cell -> CryptAccessGate.outwardDirection(anchor, cell)).distinct().count(),
+                4L,
+                "the hull seal must cover north, south, east and west openings");
+        List<BlockPos> doors = CryptAccessGate.doorSentinels(site, anchor);
+        helper.assertValueEqual(doors.size(), 4, "each wall opening needs a walkable sentinel");
+        helper.assertTrue(
+                doors.contains(entry),
+                "the well doorway must sit at the north hull sentinel");
+        helper.assertTrue(
+                hull.containsAll(doors),
+                "every door sentinel must be part of the hull seal");
         BoundingBox access = CryptAccessGate.accessBounds(anchor, entry, anchor.getY() + 12);
         helper.assertTrue(
                 access.maxY() >= anchor.getY() + 13 && access.minY() == entry.getY() - 1,
@@ -9041,10 +9149,23 @@ public final class EchoGameTests {
         helper.getLevel().setBlock(untouched, Blocks.DEEPSLATE_BRICKS.defaultBlockState(), Block.UPDATE_ALL);
         int surfaceY = anchor.getY() + 12;
         CryptAccessGate.build(helper.getLevel(), anchor, entry, surfaceY, access);
+        CryptAccessGate.sealHullOpenings(
+                helper.getLevel(),
+                present,
+                templateOrigin,
+                new StructurePlaceSettings(),
+                access);
         helper.assertTrue(
                 seal.stream().allMatch(cell -> helper.getLevel().getBlockState(cell)
                         .is(EchoesShowThePast.CRYPT_SEAL.get())),
                 "worldgen must place every solid seal cell after carving the access corridor");
+        helper.assertTrue(
+                helper.getLevel().getBlockState(entry.relative(Direction.EAST, 2))
+                        .is(EchoesShowThePast.CRYPT_SEAL.get()),
+                "the hull seal must close the authored opening beside the 3x3 well door");
+        helper.assertTrue(
+                CryptAccessGate.isSealed(helper.getLevel(), site, anchor),
+                "any remaining hull seal must keep the crypt locked");
         BlockPos shaft = entry.relative(Direction.NORTH, 4);
         helper.assertTrue(
                 helper.getLevel().getBlockState(shaft).is(Blocks.LADDER)
@@ -9061,14 +9182,62 @@ public final class EchoGameTests {
                 CryptAccessGate.unlock(helper.getLevel(), site, anchor),
                 "one real crypt response with its loaded anchor must remove the complete seal");
         helper.assertTrue(
-                seal.stream().allMatch(cell -> helper.getLevel().getBlockState(cell).isAir()),
+                seal.stream().allMatch(cell -> helper.getLevel().getBlockState(cell).isAir())
+                        && helper.getLevel().getBlockState(entry.relative(Direction.EAST, 2)).isAir(),
                 "the opened doorway must stay physically passable");
+        helper.assertFalse(
+                CryptAccessGate.isSealed(helper.getLevel(), site, anchor),
+                "clearing the loaded hull seals must unlock the crypt");
         helper.assertTrue(
                 helper.getLevel().getBlockState(untouched).is(Blocks.DEEPSLATE_BRICKS),
                 "unlocking must never remove adjacent architecture or traps");
         helper.assertFalse(
                 CryptAccessGate.unlock(helper.getLevel(), site, anchor),
                 "unlocking must be idempotent and never retrigger rewards or effects");
+        try (InputStream english = EchoGameTests.class.getResourceAsStream(
+                        "/assets/echoes_show_the_past/lang/en_us.json");
+                InputStream spanish = EchoGameTests.class.getResourceAsStream(
+                        "/assets/echoes_show_the_past/lang/es_es.json")) {
+            helper.assertTrue(
+                    english != null && spanish != null,
+                    "crypt lock copy must exist in both languages");
+            String englishText = new String(english.readAllBytes(), StandardCharsets.UTF_8);
+            String spanishText = new String(spanish.readAllBytes(), StandardCharsets.UTF_8);
+            helper.assertTrue(
+                    englishText.contains("\"message.echoes_show_the_past.crypt_locked\"")
+                            && spanishText.contains("\"message.echoes_show_the_past.crypt_locked\""),
+                    "using the sealed crypt must tell the player to activate the Resonator with the Harmonic Key");
+        } catch (IOException exception) {
+            throw new IllegalStateException("Could not inspect crypt lock translations", exception);
+        }
+
+        BlockPos floor = helper.absolutePos(new BlockPos(4, 2, 4));
+        helper.getLevel().setBlock(floor, Blocks.DEEPSLATE_TILES.defaultBlockState(), Block.UPDATE_ALL);
+        BlockPos padCenter = floor.above(3);
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dz = -1; dz <= 1; dz++) {
+                helper.getLevel().setBlock(
+                        padCenter.offset(dx, 0, dz),
+                        EchoesShowThePast.TIMELESS_PORTAL.get().defaultBlockState(),
+                        Block.UPDATE_ALL);
+            }
+        }
+        List<BlockPos> pad = UnknownFightManager.collectOverworldPad(
+                helper.getLevel(),
+                padCenter);
+        helper.assertValueEqual(pad.size(), 9, "the authored pad must remain a complete 3x3");
+        helper.assertTrue(
+                helper.getLevel().getBlockState(padCenter)
+                        .is(EchoesShowThePast.TIMELESS_PORTAL.get()),
+                "the crypt portal must keep its authored height above the chamber floor");
+        BlockPos landing = UnknownFightManager.safeReturnBesidePad(helper.getLevel(), pad);
+        helper.assertFalse(
+                pad.contains(landing),
+                "defeat must return beside the pad, not inside it");
+        UnknownFightManager.consumeOverworldPad(helper.getLevel(), pad);
+        helper.assertTrue(
+                pad.stream().allMatch(cell -> helper.getLevel().getBlockState(cell).isAir()),
+                "entering the void must take the Overworld portal with it");
         helper.succeed();
     }
 
